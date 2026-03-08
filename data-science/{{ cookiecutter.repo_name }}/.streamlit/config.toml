@@ -1,0 +1,28 @@
+[theme]
+# Harmonisation avec style.css
+# primaryColor = "#667eea"
+# backgroundColor = "#ffffff"
+# secondaryBackgroundColor = "#f0f4f8"
+# textColor = "#1e293b"
+# font = "sans serif"
+
+[client]
+# Aspect logiciel "Enterprise" (masque les outils de dev)
+toolbarMode = "minimal"
+showErrorDetails = false
+
+[browser]
+# Optimisation de la navigation et vie privée
+gatherUsageStats = false
+showSidebarNavigation = false
+
+[server]
+# Optimisation des performances serveur
+compressResponse = true
+enableCORS = false
+enableXsrfProtection = true
+maxUploadSize = 500
+
+[ui]
+# Masquage des éléments natifs restant (selon version)
+hideTopBar = true

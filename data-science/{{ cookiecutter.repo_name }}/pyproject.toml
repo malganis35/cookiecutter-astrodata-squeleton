@@ -1,0 +1,111 @@
+[project]
+license = { text = "{% if cookiecutter.open_source_license == "MIT" %}MIT{% elif cookiecutter.open_source_license == "BSD-3-Clause" %}BSD-3{% endif %}" }name = "{{ cookiecutter.package_name }}"
+dependencies = [
+    "loguru>=0.7.3",
+    "pretty-errors>=1.2.25",
+    "python-dotenv>=1.1.1",
+    "streamlit>=1.42.0",
+    "commitizen>=4.8.3",
+    "fastapi>=0.111",
+    "gitingest>=0.1.5",
+    "uvicorn>=0.30",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=4.1.0",
+    "pytest-mock==3.14.0",
+    "ruff>=0.3.0",
+    "mypy>=1.9.0",
+    "pre-commit>=3.6.0",
+]
+
+[project.scripts]
+name = "{{ cookiecutter.package_name }}"
+version = "0.1.0"
+description = "{{ cookiecutter.description }}"
+readme = "README.md"
+authors = [
+    { name = "{{ cookiecutter.author_name }}", email = "astrodata@astrodata.com" },
+]
+maintainers = [
+    { name = "{{ cookiecutter.author_name }}", email = "astrodata@astrodata.com" },
+]
+keywords = ["python", "astrodata", "data-science"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.12"
+cleanmatch-app = "app.streamlit_app:main"
+
+[build-system]
+requires = ["setuptools>=68.0.0", "uv>=0.3.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+packages = { find = { where = ["src"] } }
+
+[tool.ruff]
+line-length = 120
+lint.select = [
+    "F",   # pyflakes rules
+    "E",   # pycodestyle error rules
+    "W",   # pycodestyle warning rules
+    "B",   # flake8-bugbear rules
+    "I",   # isort rules
+    "UP",  # pyupgrade rules
+    "SIM", # flake8-simplify rules
+    "ERA", # eradicate rules
+    "C",   # pylint convention rules
+    "D",   # pydocstyle rules
+    "ANN", # flake8-annotations rules
+]
+lint.ignore = [
+    "D107",   # Missing docstring in `__init__`
+    "D203",   # incorrect-blank-line-before-class
+    "D213",   # multi-line-summary-second-line
+    "E501",   # line-too-long
+    "C901",   # too complex
+    "ERA001", # commented out code
+    "D100",   # missing docstring
+    "ERA001", # commented out code
+]
+
+[tool.ruff.format]
+indent-style = "space"
+docstring-code-format = true
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = ["ci_exclude: Tests excluded from CI/CD pipeline"]
+addopts = ["--cov=src", "--cov-report=term", "--cov-report=xml:coverage.xml"]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+tag_format = "v$version"
+version_files = ["version.txt"]
+bump_message = "chore(release): bump version $current_version → $new_version"
+update_changelog_on_bump = true
+changelog_incremental = true
+pre_bump_hooks = ["uv sync", "git add uv.lock"]
+changelog_file = "CHANGELOG.md"
+changelog_title = "# Changelog \\n\\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\\n\\n## [Unreleased]\\n"
+changelog_message_template = """
+## {{version}} - {{date}}
+
+{{#each commits}}
+- {{message}}
+{{/each}}
+
+"""
+
+[project.urls]
+homepage = "Code repo URL for your projects"

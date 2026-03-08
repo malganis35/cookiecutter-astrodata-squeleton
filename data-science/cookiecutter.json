@@ -1,0 +1,25 @@
+{
+    "project_name": "project_name",
+    "repo_name": "{{ cookiecutter.project_name.lower().replace(' ', '_') }}",
+    "package_name": "{{ cookiecutter.repo_name.lower().replace(' ', '_') }}",
+    "author_name": "Your name (or your organization/company/team)",
+    "description": "A short description of the project.",
+    "open_source_license": [
+        "No license file",
+        "MIT",
+        "BSD-3-Clause"
+    ],
+    "python_version": "3.12.0",
+    "python_matrix": [
+        "['3.10', '3.11', '3.12']",
+        "Matrice of Python Versions to test"
+    ],
+    "install_precommit": [
+        "yes",
+        "no"
+    ],
+    "initialize_sphinx_documentation": [
+        "yes",
+        "no"
+    ]
+}

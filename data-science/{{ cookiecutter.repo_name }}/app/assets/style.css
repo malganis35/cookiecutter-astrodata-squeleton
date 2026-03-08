@@ -1,0 +1,298 @@
+/* ===========================
+   VARIABLES CSS
+   =========================== */
+:root {
+    /* Couleurs sémantiques - Défaut (Light par défaut) */
+    --bg-main: #f0f4f8;
+    --bg-card: #ffffff;
+    --bg-glass: rgba(255, 255, 255, 0.85);
+    --bg-glass-heavy: rgba(255, 255, 255, 0.95);
+    --bg-glass-scrolled: rgba(255, 255, 255, 0.98);
+    --bg-card-hover: #ffffff;
+
+    --text-primary: #000000;
+    --text-secondary: #1e293b;
+
+    --bg-header: rgba(255, 255, 255, 0.85);
+    --bg-header-scrolled: rgba(255, 255, 255, 0.95);
+    --text-header: #475569;
+    --text-header-hover: #667eea;
+    --border-header: rgba(148, 163, 184, 0.15);
+
+    --border-color: rgba(102, 126, 234, 0.15);
+    --border-hover: var(--color-primary);
+
+    --shadow-card: 0 4px 20px rgba(148, 163, 184, 0.15);
+    --shadow-hover: 0 10px 30px rgba(102, 126, 234, 0.2);
+
+    /* Couleurs de marque */
+    --color-primary: #667eea;
+    --color-secondary: #764ba2;
+    --color-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+    /* Legacy mappings */
+    --color-bg-dark: var(--bg-main);
+    --color-bg-card: var(--bg-card);
+    --color-bg-glass: var(--bg-glass);
+    --color-text-primary: var(--text-primary);
+    --color-text-secondary: var(--text-secondary);
+    --color-border: var(--border-color);
+
+    /* Typographie */
+    --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+    /* Espacements */
+    --spacing-xs: 0.5rem;
+    --spacing-sm: 1rem;
+    --spacing-md: 2rem;
+    --spacing-lg: 4rem;
+    --spacing-xl: 6rem;
+
+    /* Transitions */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease-out;
+}
+
+/* ===========================
+   RESET & BASE
+   =========================== */
+.main {
+    background-color: transparent !important;
+}
+
+/* ===========================
+   FOND ANIMÉ
+   =========================== */
+.grid-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-image:
+        linear-gradient(rgba(102, 126, 234, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(102, 126, 234, 0.05) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: gridMove 20s linear infinite;
+    opacity: 0.5;
+}
+
+@keyframes gridMove {
+    0% {
+        background-position: 0 0;
+    }
+
+    100% {
+        background-position: 50px 50px;
+    }
+}
+
+.glow-orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.15;
+    z-index: -1;
+    pointer-events: none;
+    animation: orbFloat 15s ease-in-out infinite;
+}
+
+.glow-orb-1 {
+    width: 600px;
+    height: 600px;
+    background: var(--color-primary);
+    top: -200px;
+    right: -200px;
+}
+
+.glow-orb-2 {
+    width: 500px;
+    height: 500px;
+    background: var(--color-secondary);
+    bottom: -150px;
+    left: -150px;
+    animation-delay: -7s;
+}
+
+@keyframes orbFloat {
+
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+
+    33% {
+        transform: translate(50px, 100px) scale(1.1);
+    }
+
+    66% {
+        transform: translate(-30px, -50px) scale(0.9);
+    }
+}
+
+/* ===========================
+   HERO SECTION
+   =========================== */
+.hero {
+    padding: var(--spacing-sm) 0 var(--spacing-md) 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 1000px;
+    margin: 0 auto;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin-bottom: var(--spacing-md);
+    letter-spacing: -0.03em;
+}
+
+.hero-title-line {
+    display: block;
+    color: var(--text-secondary);
+    font-size: clamp(1.2rem, 3vw, 1.5rem);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.hero-title-highlight {
+    background: var(--color-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+}
+
+.hero-subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-md);
+    max-width: 700px;
+    line-height: 1.7;
+}
+
+/* ===========================
+   STYLING STREAMLIT COMPONENTS
+   =========================== */
+
+/* Streamlit Tabs */
+.stTabs [data-baseweb="tab-list"] {
+    gap: 8px;
+    background-color: transparent !important;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.stTabs [data-baseweb="tab"] {
+    height: 45px;
+    white-space: pre-wrap;
+    background-color: transparent !important;
+    border-radius: 8px 8px 0 0;
+    padding: 8px 16px;
+    color: var(--text-secondary);
+    border: 1px solid transparent;
+    border-bottom: none;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.stTabs [data-baseweb="tab"]:hover {
+    color: var(--color-primary);
+    background-color: rgba(102, 126, 234, 0.05) !important;
+}
+
+.stTabs [aria-selected="true"] {
+    background-color: rgba(102, 126, 234, 0.1) !important;
+    color: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    border-bottom: 2px solid var(--color-primary) !important;
+    font-weight: 700 !important;
+}
+
+/* Minimize top padding of the main container */
+.block-container {
+    padding-top: 1.5rem !important;
+    padding-bottom: 2rem !important;
+}
+
+/* Hide the default Streamlit header bar to save space */
+header[data-testid="stHeader"] {
+    background-color: transparent !important;
+    height: 0;
+}
+
+/* Streamlit Containers as Cards - Force transparency and visibility */
+[data-testid="stMetric"] {
+    background: rgba(255, 255, 255, 0.05) !important;
+    backdrop-filter: blur(8px);
+    padding: 1.2rem !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(102, 126, 234, 0.2) !important;
+    text-align: center !important;
+}
+
+/* Use Streamlit Internal Variables to ensure contrast in both modes */
+[data-testid="stMetric"] * {
+    color: #000000 !important;
+    /* Force black strictly for light mode first */
+    opacity: 1 !important;
+    text-shadow: none !important;
+}
+
+[data-testid="stMetricValue"] div {
+    font-weight: 800 !important;
+    font-size: 2.3rem !important;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+[data-testid="stMetricLabel"] p {
+    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    color: #000000 !important;
+    /* Black */
+    opacity: 0.8 !important;
+    text-align: center !important;
+}
+
+/* Sidebar styling */
+.css-1639w78,
+.st-emotion-cache-6q9sum {
+    background-color: var(--bg-main) !important;
+}
+
+/* Buttons */
+.stButton>button {
+    background: var(--color-gradient) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 12px !important;
+    padding: 0.6rem 1.5rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+}
+
+.stButton>button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+}

@@ -1,0 +1,105 @@
+variables:
+  UV_VERSION: "0.5"
+  PYTHON_VERSION: "3.12"
+  BASE_LAYER: bookworm-slim
+  UV_LINK_MODE: copy  # GitLab CI build dir requires copy mode
+
+.default_git_setup: &default_git_setup
+  - apt-get update && apt-get install -y git
+  - git remote set-url origin "https://${CI_GIT_USERNAME}:${CI_GIT_TOKEN}@gitlab.com/${CI_PROJECT_PATH}.git"
+  - git fetch origin
+  - git fetch --tags --unshallow
+  - git checkout -B "$CI_DEFAULT_BRANCH" "origin/$CI_DEFAULT_BRANCH"
+  - ls -al .git || echo "⚠️ Dossier .git non présent"
+
+.default_image: &default_image ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER
+
+workflow:
+  rules:
+    - if: ($CI_PIPELINE_SOURCE == 'merge_request_event' || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH )
+
+stages:
+  - build-devcontainer
+  - check
+  - test
+  - release
+  - build-project
+  - deploy
+
+# Lint + Format
+python_lint:
+  stage: check
+  image: *default_image
+  script:
+    - uv run --native-tls --extra lint ruff check .
+
+python_format:
+  stage: check
+  image: *default_image
+  script:
+    - uv run --native-tls --extra lint ruff format .
+
+# Tests unitaires
+coverage:
+  stage: test
+  image: *default_image
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: on_success
+    - when: never
+  script:
+    - uv run --native-tls --extra test pytest --cov=src/ tests/ --cov-report term --cov-report xml:coverage.xml --junitxml=report.xml # --cov-config=.coveragerc
+  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  artifacts:
+    when: always
+    paths:
+      - report.xml
+    reports:
+      junit: report.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+
+
+# Test the retro-compatibility of the package again multiple python version
+pytest:
+  stage: test
+  image: *default_image
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: on_success
+    - when: never
+  script:
+    - - uv run --native-tls --python $VERSION --extra test pytest
+  parallel:
+    matrix:
+      - VERSION: ['3.10', '3.11', '3.12']
+
+
+# Versioning + changelog (release)
+release:
+  stage: release
+  image: *default_image
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: on_success
+    - when: never
+  before_script: *default_git_setup
+  script:
+    - git config --global user.name "CI Gitlab"
+    - git config --global user.email "ci@gitlab.com"
+    - uv run cz bump --yes --changelog
+    - git push origin "$CI_DEFAULT_BRANCH"
+    - git push --tags
+  needs:
+    - 'python_format'
+    - 'python_lint'
+    - coverage
+    - pytest
+
+# Exemple de cache UV (optionnel)
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - /root/.cache/uv
+    - .venv/
