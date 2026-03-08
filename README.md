@@ -1,6 +1,6 @@
 # Cookiecutter AstroData Squeleton
 
-_A logical, reasonably standardized, but flexible project structure for doing and sharing data science work._
+_A collection of logical, reasonably standardized, but flexible project structures for doing and sharing your work._
 
 This project is based on Cookiecutter Data Science : [Project homepage](http://drivendata.github.io/cookiecutter-data-science/)
 
