@@ -8,7 +8,7 @@ def init_git():
     print("Init the git repo")
     subprocess.call(['git', 'init', '--initial-branch=main'])
     subprocess.call(['git', 'add', '.'])
-    subprocess.call(['git', 'commit', '-m', '[ADD] Initial skeleton commit'])
+    subprocess.call(['git', 'commit', '-m', 'initial commit'])
 
 def remove_licence():
     print("")
@@ -29,7 +29,7 @@ def generate_nested_project():
             'python_interpreter': "python3"
         }
 
-        cc(  # Utilisation de l'alias 'cc'
+        cc(
             "git@github.com:malganis35/cookiecutter-astrodata-squeleton.git",
             directory="sphinx-docs",
             extra_context=child_config,
@@ -48,7 +48,7 @@ def generate_nested_project():
 def initiate_docs():
     print("")
     print("Initiate Sphinx documentation if yes")
-    if "{{ cookiecutter.initialize_sphinx_documentation }}" == "yes":  # Accès direct au contexte
+    if "{{ cookiecutter.initialize_sphinx_documentation }}" == "yes":
         print("Init Sphinx doc")
         generate_nested_project()
         
