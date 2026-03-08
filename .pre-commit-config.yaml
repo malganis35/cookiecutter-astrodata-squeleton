@@ -1,0 +1,15 @@
+# Source:
+# https://medium.com/internet-of-technology/beautify-your-python-code-with-pre-commit-linters-a-step-by-step-guide-d63604d6120b
+# https://medium.com/marvelous-mlops/welcome-to-pre-commit-heaven-5b622bb8ebce
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-yaml
+      # check-toml: Validates TOML files for syntax errors.
+      - id: check-toml
+      # check-json: Validates JSON files for syntax errors.
+      - id: check-json
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
