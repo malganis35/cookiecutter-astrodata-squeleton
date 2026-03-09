@@ -134,8 +134,20 @@ def main():
         if "pyg_data" in st.session_state:
             st.markdown("---")
             st.subheader("🔍 Interactive Data Explorer")
+            
+            # Optimal parameters for Pygwalker
             if "pyg_renderer" not in st.session_state:
-                st.session_state.pyg_renderer = StreamlitRenderer(st.session_state.pyg_data)
+                # use_kernel_calc=True protect the RAM of the webbrowser by delegating the computation to the backend
+                # themeKey="streamlit" force the UI to respect the light/dark mode of your app
+                st.session_state.pyg_renderer = StreamlitRenderer(
+                    st.session_state.pyg_data,
+                    spec="./app/assets/pygwalker_config.json", # Optionnel: save of the UI config
+                    env="streamlit",
+                    themeKey="streamlit",
+                    use_kernel_calc=True 
+                )
+            
+            # Display the explorer
             st.session_state.pyg_renderer.explorer()
         else:
             st.info("💡 Please import a dataset from the left menu to unlock the Interactive Data Explorer.")
