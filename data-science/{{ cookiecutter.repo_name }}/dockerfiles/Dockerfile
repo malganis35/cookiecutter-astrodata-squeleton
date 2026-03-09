@@ -1,4 +1,4 @@
-FROM python:{cookiecutter.python_version}-slim
+FROM python:{{ cookiecutter.python_version }}-slim
 
 # Installer uv
 RUN pip install uv
