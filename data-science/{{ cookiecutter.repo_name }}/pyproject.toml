@@ -85,6 +85,15 @@ docstring-code-format = true
 [tool.mypy]
 strict = true
 ignore_missing_imports = true
+# Add Pydantic plugin to avoid false positive from the FastAPI model
+plugins = [
+    "pydantic.mypy"
+]
+# Strict config for Pydantic
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
