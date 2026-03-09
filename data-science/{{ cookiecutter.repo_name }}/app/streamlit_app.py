@@ -48,7 +48,7 @@ def sidebar():
     logger.info("Setting up sidebar")
     with st.sidebar:
         # Company Logo
-        st.image("https://www.semarchy.com/wp-content/uploads/2022/04/original.png", use_container_width=True)
+        st.image("https://img.freepik.com/vecteurs-libre/modele-logo-donnees-professionnelles_23-2149227039.jpg", use_container_width=True)
         st.markdown("---")
         
         st.subheader("📁 Data Settings")
