@@ -1,4 +1,4 @@
-# Changelog - CleanMatch
+# Changelog - {{ cookiecutter.project_name }}
 
 All notable changes to this project will be documented in this file.
 

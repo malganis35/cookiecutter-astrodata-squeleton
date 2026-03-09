@@ -49,10 +49,10 @@ make run
 docker-compose up -d
 ```
 
-The service are served by default:
+The services are served by default:
 
-- Streamlit App: http://localhost:8502
-- FastAPI App: http://localhost:8601
+- Streamlit App: http://localhost:8501
+- FastAPI App: http://localhost:8000
 
 2. You can shut down the services with:
 
@@ -65,8 +65,6 @@ docker-compose down
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
 ![fastapi](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
 ![docker](https://img.shields.io/badge/docker-257bd6?style=for-the-badge&logo=docker&logoColor=white)
-![airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?style=for-the-badge&logo=Apache%20Airflow&logoColor=white)
-![mlflow](https://img.shields.io/badge/mlflow-%23d9ead3.svg?style=for-the-badge&logo=numpy&logoColor=blue)
 
 ![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
 ![GitLab](https://img.shields.io/badge/gitlab-%23181717.svg?style=for-the-badge&logo=gitlab&logoColor=white)

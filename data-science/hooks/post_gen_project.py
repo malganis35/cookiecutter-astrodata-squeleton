@@ -16,6 +16,14 @@ def remove_licence():
     if "{{ cookiecutter.open_source_license }}" == "No license file":
         Path("LICENSE").unlink()
 
+def remove_precommit():
+    print("")
+    if "{{ cookiecutter.install_precommit }}" == "no":
+        print("Remove .pre-commit-config.yaml as requested")
+        precommit_file = Path(".pre-commit-config.yaml")
+        if precommit_file.exists():
+            precommit_file.unlink()
+
 def generate_nested_project():
     """Generate the Sphinx documentation with presets"""
     try:
@@ -74,6 +82,7 @@ Next Steps:
 
 # Main : Execute all the functions
 remove_licence()
+remove_precommit()
 initiate_docs()
 init_git()
 ending_note()
