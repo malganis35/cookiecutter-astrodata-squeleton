@@ -4,11 +4,22 @@ from {{ cookiecutter.package_name }}.api.main import app
 
 client = TestClient(app)
 
+client = TestClient(app)
+
 def test_health_endpoint():
     """Tests the /health endpoint for a 200 status."""
     response = client.get("/health")
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
+
+def test_api_version():
+    """Tests the /version endpoint to reach 100% coverage."""
+    response = client.get("/version")
+    assert response.status_code == 200
+    
+    # Lecture dynamique du fichier pour la comparaison
+    expected_version = Path("VERSION").read_text().strip()
+    assert response.json() == {"version": expected_version}
 
 def test_api_home():
     """Tests the root API route."""
@@ -27,3 +38,11 @@ def test_api_bonjour():
     response = client.get("/bonjour")
     assert response.status_code == 200
     assert response.json() == {"message": "Hello world!"}
+
+def test_app_metadata():
+    """Vérifie que les paramètres d'initialisation de FastAPI sont corrects."""
+    assert app.title == "project_name"
+    assert app.description == "API for project_name"
+    # Vérifie que la fonction get_project_version() a été appelée correctement
+    expected_version = Path("VERSION").read_text().strip()
+    assert app.version == expected_version
