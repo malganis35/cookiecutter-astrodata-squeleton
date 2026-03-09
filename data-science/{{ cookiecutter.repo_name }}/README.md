@@ -153,5 +153,5 @@ Project Organization
 4. Open a Pull Request.
 
 ## 📄 License
-This project is under the {{ cookiecutter.project_license }} license.
+This project is under the {{ cookiecutter.open_source_license }} license.
 Additionnal information can be found in the [LICENSE](LICENSE) file.
