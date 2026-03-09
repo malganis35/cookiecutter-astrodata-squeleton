@@ -99,12 +99,13 @@ pre_bump_hooks = ["uv sync", "git add uv.lock"]
 changelog_file = "CHANGELOG.md"
 changelog_title = "# Changelog \\n\\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\\n\\n## [Unreleased]\\n"
 changelog_message_template = """
+{% raw %}
 ## {{version}} - {{date}}
 
 {{#each commits}}
 - {{message}}
 {{/each}}
-
+{% endraw %}
 """
 
 [project.urls]
