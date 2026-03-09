@@ -10,7 +10,7 @@ from pygwalker.api.streamlit import StreamlitRenderer
 def set_page_config():
     logger.info("Initializing page layout")
     st.set_page_config(
-        page_title="project_name - UI",
+        page_title="{{ cookiecutter.project_name }} - UI",
         page_icon="📊",
         layout="wide"
     )
@@ -35,10 +35,10 @@ def display_hero():
         <div class="hero">
             <h1 class="hero-title">
                 <span class="hero-title-line">Data Control Center</span>
-                <span class="hero-title-highlight">project_name</span>
+                <span class="hero-title-highlight">{{ cookiecutter.project_name }}</span>
             </h1>
             <p class="hero-subtitle">
-                A example of Streamlit interface demo for project_name project.
+                A example of Streamlit interface demo for {{ cookiecutter.project_name }} project.
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -62,40 +62,36 @@ def sidebar():
         st.info("Configuration loaded from .streamlit/config.toml")
     return dataset_file
 
-def load_data(dataset_file):
-    """Centralized data loading logic with session state management."""
-    if dataset_file is not None:
-        # Check if a new file has been uploaded
-        file_name = dataset_file.name.lower()
-        if st.session_state.get("current_file") != file_name:
-            # Clear previous data and renderer to force reload
-            if "pyg_data" in st.session_state:
-                del st.session_state.pyg_data
-            if "pyg_renderer" in st.session_state:
-                del st.session_state.pyg_renderer
-            st.session_state["current_file"] = file_name
-            logger.info(f"New file detected: {file_name}. Clearing session state.")
+# --- CACHING OPTIMIZATION ---
+@st.cache_data(show_spinner="Chargement des données...")
+def get_cached_dataframe(file_bytes, file_name: str):
+    """Utilise le cache de Streamlit pour éviter de recharger le fichier à chaque interaction."""
+    import io
+    if file_name.endswith(".parquet"):
+        return pd.read_parquet(io.BytesIO(file_bytes))
+    elif file_name.endswith(".csv"):
+        return pd.read_csv(io.BytesIO(file_bytes))
+    elif file_name.endswith((".xlsx", ".xls")):
+        return pd.read_excel(io.BytesIO(file_bytes))
+    return None
 
-        if "pyg_data" not in st.session_state:
-            try:
-                # Detect file type and load accordingly
-                if file_name.endswith(".parquet"):
-                    st.session_state.pyg_data = pd.read_parquet(dataset_file)
-                elif file_name.endswith(".csv"):
-                    st.session_state.pyg_data = pd.read_csv(dataset_file)
-                elif file_name.endswith((".xlsx", ".xls")):
-                    st.session_state.pyg_data = pd.read_excel(dataset_file)
-                
-                logger.info(f"Dataset '{file_name}' loaded into session state")
-            except Exception as e:
-                st.error(f"Error reading file: {e}")
-                return False
+def load_data(dataset_file):
+    """Centralized data loading logic using Streamlit caching."""
+    if dataset_file is not None:
+        file_name = dataset_file.name.lower()
+        st.session_state["current_file"] = file_name
+        
+        try:
+            # On passe les bytes au cache pour permettre le hachage par Streamlit
+            st.session_state.pyg_data = get_cached_dataframe(dataset_file.getvalue(), file_name)
+            logger.info(f"Dataset '{file_name}' loaded successfully")
+        except Exception as e:
+            st.error(f"Error reading file: {e}")
+            return False
     else:
         # File was removed
-        if "pyg_data" in st.session_state:
-            del st.session_state.pyg_data
-        if "pyg_renderer" in st.session_state:
-            del st.session_state.pyg_renderer
+        st.session_state.pop("pyg_data", None)
+        st.session_state.pop("pyg_renderer", None)
         st.session_state["current_file"] = None
     return True
 

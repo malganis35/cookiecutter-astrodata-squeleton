@@ -19,4 +19,4 @@ RUN uv pip compile pyproject.toml > requirements.txt && \
 COPY . .
 
 # Lancer l'API
-CMD ["uvicorn", "{{ cookiecutter.repo_name }}.app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "{{ cookiecutter.package_name }}.api.main:app", "--host", "0.0.0.0", "--port", "8000"]
