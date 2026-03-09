@@ -1,18 +1,16 @@
-## Description des changements
-<!-- Décrivez brièvement les modifications apportées par cette PR. -->
+## Description of Changes
 
-## Type de changement
-- [ ] 🐛 Bugfix (non-breaking change qui corrige un problème)
-- [ ] ✨ Feature (non-breaking change qui ajoute une fonctionnalité)
-- [ ] 🚜 Refactor (changement structurel sans modification fonctionnelle)
-- [ ] 📚 Documentation (mise à jour de la doc uniquement)
+## Type of Change
+* [ ] 🐛 **Bugfix** (non-breaking change which fixes an issue) 
+* [ ] ✨ **Feature** (non-breaking change which adds functionality) 
+* [ ] 🚜 **Refactor** (structural change without functional modification) 
+* [ ] 📚 **Documentation** (documentation update only) 
 
 ## Checklist
-- [ ] Mes changements passent `make check` localement.
-- [ ] J'ai ajouté des tests pour mes nouvelles fonctionnalités / corrections.
-- [ ] Mypy ne retourne aucune erreur de type.
-- [ ] Ruff ne retourne aucun warning.
-- [ ] J'ai mis à jour le README si nécessaire.
+* [ ] My changes pass `make check` locally. 
+* [ ] I have added tests for my new features / fixes. 
+* [ ] Mypy returns no type errors. 
+* [ ] Ruff returns no warnings. 
+* [ ] I have updated the README if necessary. 
 
-## Captures d'écran / Demo
-<!-- Si applicable, ajoutez des visuels pour aider à la revue. -->
+## Screenshots / Demo

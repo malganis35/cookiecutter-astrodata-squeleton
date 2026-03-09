@@ -1,37 +1,37 @@
-name: Rapport de Bug
-description: Signaler un comportement inattendu ou une erreur.
+name: Bug Report
+description: Report unexpected behavior or an error.
 labels: ["bug"]
 body:
   - type: textarea
     id: description
     attributes:
-      label: Description du bug
-      description: Un résumé clair et concis du problème.
+      label: Bug Description
+      description: A clear and concise summary of the issue.
     validations:
       required: true
   - type: textarea
     id: reproduction
     attributes:
-      label: Étapes pour reproduire
+      label: Steps to Reproduce
       description: |
-        1. Upload de tel fichier...
-        2. Sélection de telle colonne...
-        3. Clic sur ...
-        4. Erreur constatée.
+        1. Uploaded specific file...
+        2. Selected specific column...
+        3. Clicked on...
+        4. Error occurred.
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: Comportement attendu
-      description: Ce que vous auriez dû voir.
+      label: Expected Behavior
+      description: What you should have seen happen.
   - type: textarea
     id: context
     attributes:
-      label: Contexte technique
-      description: Version Python, OS, Navigateur, etc.
+      label: Technical Context
+      description: Python version, OS, Browser, etc.
   - type: input
     id: version
     attributes:
-      label: Version du package
-      placeholder: ex: 0.1.0
+      label: Package Version
+      placeholder: e.g., 0.1.0
