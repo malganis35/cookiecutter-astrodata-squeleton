@@ -1,99 +1,81 @@
-# CleanMatch ✨
+# {{ cookiecutter.project_name }}
 
-[![CI](https://github.com/malganis35/dedup-lens/actions/workflows/ci.yml/badge.svg)](https://github.com/malganis35/dedup-lens/actions)
+[![CI](https://github.com/<name>/<repo_name>/actions/workflows/ci.yml/badge.svg)](https://github.com/<name>/<repo_name>/actions)
 [![Python](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![uv](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json)](https://github.com/astral-sh/uv)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-![CleanMatch Logo](docs/cleanmatch.png)
-
 ## Description
-CleanMatch est un outil intelligent de dédoublonnage de bases de données tiers (fournisseurs, clients). Il utilise des algorithmes de similarité textuelle floue pour identifier les doublons potentiels malgré les fautes de frappe, les abréviations juridiques ou les différences de casse, permettant ainsi de nettoyer vos catalogues de données rapidement et avec une revue humaine sécurisée.
+{{ cookiecutter.project_description }}
 
 ## 🚀 Features
-- **Normalisation avancée** : Suppression automatique des accents, ponctuations, standardisation des abréviations et des suffixes légaux (SARL, SAS, etc.).
-- **Blocking Multi-Clés** : Indexation hybride (littérale, phonétique Metaphone/Soundex, et préfixes) pour garantir un recall élevé même avec des fautes de frappe sévères.
-- **Filtrage Sémantique** : Exclusion intelligente des mots vides business (SOCIETE, GROUPE, LES) pour éviter les blocs géants.
-- **Interface Scalable** : Pagination native de la revue pour traiter des milliers de clusters sans ralentissement.
-- **Audit & Logs** : Système de logging permanent avec rotation et compression pour le debug en production.
-- **Conformité Enterprise** : Hachage technique (MD5) compatible avec les systèmes en mode FIPS.
-- **Export Excel** : Génération de fichiers de correction et de datasets enrichis avec retour visuel (couleurs).
-- **Modèle Freemium** : Prêt pour le déploiement public avec limitation automatique des ressources.
-- **Mode PRO** : Activation d'une version illimitée via une simple variable d'environnement.
+{{ cookiecutter.project_features }}
 
 ## 🏗️ Architecture
-Le pipeline de traitement suit un flux logique modulaire. Pour une explication détaillée des algorithmes et des stratégies de dédoublonnage, consultez le fichier **[ARCHITECTURE.md](ARCHITECTURE.md)**.
-
-```text
-[Données Brutes] --> [Normalisation] --> [Blocking (Indexation)]
-                          |                      |
-                          v                      v
-                  [Calcul de Score] <--- [Paires candidates]
-                          |
-                          v
-                  [Clustering (Union-Find)] --> [Review UI] --> [Export Final]
-```
+{{ cookiecutter.project_architecture }}
 
 ## 🛠️ Installation
 
-1. Clonez le dépôt :
+1. Clone the repository :
 ```bash
-git clone https://github.com/votre-compte/cleanmatch.git
-cd cleanmatch
+git clone <GITHUB URL>
+cd {{ cookiecutter.repo_name }}
 ```
 
-2. Installez les dépendances avec [uv](https://github.com/astral-sh/uv) :
+2. Install dependencies with [uv](https://github.com/astral-sh/uv):
 ```bash
 uv sync
 ```
 
-3. Lancez l'application :
+3. Copy the .env.example file to .env and fill it with your values:
+```bash
+cp .env.example .env
+```
+
+## 📖 Usage
+
+1. Launch the application :
 ```bash
 make run
 ```
 
-## 📖 Usage Pas-à-pas
+2. Webservices: Streamlit & FastAPI (with docker): We provide also for Streamlit and FastAPI a Dockerfile and Docker Compose file.
 
-1. **Upload** : Chargez votre fichier CSV ou Excel dans le premier onglet. Sélectionnez la colonne contenant les noms à traiter.
-2. **Review** : Naviguez dans l'onglet "Revue & Validation" pour traiter les clusters détectés. Utilisez la **pagination** pour parcourir de gros volumes d'erreurs.
-3. **Export** : Téléchargez vos résultats sous forme de mappings de correction stylisés.
+1. You can launch the webservices with:
 
-> [!TIP]
-> Utilisez le curseur de "Seuil de similarité" pour ajuster la sensibilité. Un seuil de 50.0 est le nouveau défaut pour maximiser le rappel initial.
-
-## 🎁 Freemium & PRO Mode
-
-CleanMatch est conçu pour être partagé publiquement (ex: LinkedIn) tout en restant un outil professionnel puissant.
-
-- **Version Free (Défaut)** :
-    - Limitée aux **100 premières lignes** du fichier uploadé.
-    - Mode "Exhaustif" $O(N^2)$ désactivé pour protéger les ressources serveur.
-    - Note de confidentialité RGPD intégrée.
-- **Mode PRO (Plein)** :
-    - Aucune limite de lignes.
-    - Accès complet aux options avancées (mode exhaustif).
-    - Suppression des avertissements et disclaimers freemium.
-
-### Activer le Mode PRO
-Définissez la variable d'environnement suivante avant de lancer l'application :
-```bash
-export CLEANMATCH_PRO_MODE=True
-make run
+```
+docker-compose up -d
 ```
 
-## ⚙️ Configuration
-Le moteur utilise plusieurs constantes modifiables dans `src/cleanmatch/constants.py` :
-- `DEFAULT_SIMILARITY_THRESHOLD` : Seuil par défaut (50.0).
-- `LEGAL_SUFFIXES` : Liste des formes juridiques à ignorer.
-- `STOP_WORDS` : Mots vides à ignorer lors de la création des blocs (SOCIETE, GROUPE...).
-- `ABBREVIATIONS` : Dictionnaire de normalisation (ST -> SAINT, CIE -> COMPAGNIE).
-- `SCORING_WEIGHTS` : Pondération entre Ratio, Token Sort et Token Set.
-- `MAX_FREE_ROWS` : Limite de la version gratuite (défaut : 100).
-- `CLEANMATCH_PRO_MODE` : Variable d'environnement pour basculer en version illimitée.
+The service are served by default:
 
-## 👨‍💻 Développement
+- Streamlit App: http://localhost:8502
+- FastAPI App: http://localhost:8601
 
-Pour contribuer au projet :
+2. You can shut down the services with:
+
+```
+docker-compose down
+```
+
+## 🛠️ Technological Stack
+![Linux](https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black)
+![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)
+![fastapi](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)
+![docker](https://img.shields.io/badge/docker-257bd6?style=for-the-badge&logo=docker&logoColor=white)
+![airflow](https://img.shields.io/badge/Apache%20Airflow-017CEE?style=for-the-badge&logo=Apache%20Airflow&logoColor=white)
+![mlflow](https://img.shields.io/badge/mlflow-%23d9ead3.svg?style=for-the-badge&logo=numpy&logoColor=blue)
+
+![GitHub](https://img.shields.io/badge/github-%23121011.svg?style=for-the-badge&logo=github&logoColor=white)
+![GitLab](https://img.shields.io/badge/gitlab-%23181717.svg?style=for-the-badge&logo=gitlab&logoColor=white)
+[![Git](https://img.shields.io/badge/Git-F05032?logo=git&logoColor=fff)](#)
+
+![streamlit](https://img.shields.io/badge/-Streamlit-FF4B4B?style=flat&logo=streamlit&logoColor=white)
+![sphinx](https://img.shields.io/badge/Sphinx-F7C942?style=flat&logo=sphinx&logoColor=white)
+
+## 👨💻 Development
+
+Additionnal commands to contribute to the project can be found in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
 1. Initialisez l'environnement de développement :
 ```bash
@@ -110,11 +92,64 @@ make all
 make test-fast
 ```
 
+Project Organization
+--------------------
+
+    ├── docker-compose          <- Docker Compose to expose Streamlit and FastAPI as webservices
+    ├── LICENSE                 <- Open- or closed-source license if one is chosen
+    ├── Makefile                <- Makefile with commands like `make run` or `make run_app`
+    ├── README.md               <- The top-level README for developers using this project.
+    │
+    ├── data
+    │   ├── external            <- Data from third party sources.
+    │   ├── interim             <- Intermediate data that has been transformed.
+    │   ├── processed           <- The final, canonical data sets for modeling.
+    │   └── raw                 <- The original, immutable data dump.
+    │
+    ├── dockerfiles             <- Dockerfile to install the project
+    │
+    ├── docs                    <- A default Sphinx project; see sphinx-doc.org for details
+    │   ├── references          <- Data dictionaries, manuals, and all other explanatory materials.
+    │   ├── reports             <- Generated analysis as HTML, PDF, LaTeX, etc.
+    │   └── figures             <- Generated graphics and figures to be used in reporting
+    │
+    ├── models                  <- Trained and serialized models, model predictions, or model summaries
+    │
+    ├── notebooks               <- Jupyter notebooks. Naming convention is a number (for ordering),
+    │                            the creator's initials, and a short `-` delimited description, e.g.
+    │                            `1.0-jqp-initial-data-exploration`.
+    │
+    ├── pyproject.toml          <- Project configuration file with package metadata for
+    │                            {{ cookiecutter.package_name }} and configuration for tools like ruff
+    │
+    ├── src                     <- Source code for use in this project.
+    │   │
+    │   ├──{{cookiecutter.package_name}}   <- Name of your package
+    │   │   ├── __init__.py     <- Makes the package a Python module
+    │   │   │
+    │   │   ├── data            <- Module to extract / transform / load data
+    │   │   │
+    │   │   ├── features        <- Module to turn raw data into features for modeling
+    │   │   │
+    │   │   ├── models          <- Module to train models and then use trained models to make
+    │   │   │                    predictions
+    │   │   │
+    │   │   ├── utils           <- Module for utility functions
+    │   │   │
+    │   │   └── visualization   <- Module to create exploratory and results oriented visualizations
+    │
+    ├── .env.template           <- .env file template for credentials
+    ├── .gitignore              <- Standard gitignore file for DS project
+    ├── .gitlab-ci.yml          <- CI/CD for Gitlab
+    └── .pre-commit-config.yaml <- pre-commit config file
+
+
 ## 🤝 Contribution
-1. Créez une branche (`git checkout -b feature/ma-feature`).
-2. Utilisez des **Conventional Commits** (`feat:`, `fix:`, `docs:`, etc.).
-3. Vérifiez que `make check` passe à 100%.
-4. Ouvrez une Pull Request.
+1. Create a new branch (`git checkout -b feature/my-feature`).
+2. Use **Conventional Commits** (`feat:`, `fix:`, `docs:`, etc.).
+3. Verify that `make check` passes at 100%.
+4. Open a Pull Request.
 
 ## 📄 License
-Ce projet est sous licence MIT. Voir le fichier [LICENSE](LICENSE) pour plus de détails.
+This project is under the {{ cookiecutter.project_license }} license.
+Additionnal information can be found in the [LICENSE](LICENSE) file.
