@@ -7,7 +7,7 @@ services:
     container_name: {{ cookiecutter.repo_name }}-pythonserver
     ports:
       - "8000:8000"
-    command: uvicorn {{ cookiecutter.repo_name }}.app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn {{ cookiecutter.repo_name }}.api.main:app --host 0.0.0.0 --port 8000 --reload
     networks:
       - {{ cookiecutter.repo_name }}-network
     restart: on-failure
@@ -21,8 +21,6 @@ services:
           target: /app/pyproject.toml
         - action: rebuild
           path: ./Dockerfile
-    profiles:
-      - main
 
 networks:
   {{ cookiecutter.repo_name }}-network:
