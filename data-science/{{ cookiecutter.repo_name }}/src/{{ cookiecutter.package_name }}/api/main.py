@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from {{ cookiecutter.package_name }}.api.routes import router
+from {{ cookiecutter.package_name }}.api.routers import system, greetings, base
 from pathlib import Path
 
 def get_project_version() -> str:
@@ -21,7 +21,7 @@ app.include_router(greetings.router)
 
 def main():  # pragma: no cover
     import uvicorn
-    uvicorn.run("project_name.api.main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("{{ cookiecutter.package_name }}.api.main:app", host="0.0.0.0", port=8000, reload=True)
 
 
 if __name__ == "__main__":

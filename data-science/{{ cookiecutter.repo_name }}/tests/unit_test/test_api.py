@@ -40,8 +40,8 @@ def test_api_bonjour():
 
 def test_app_metadata():
     """Vérifie que les paramètres d'initialisation de FastAPI sont corrects."""
-    assert app.title == "project_name"
-    assert app.description == "API for project_name"
+    assert app.title == "{{ cookiecutter.package_name }}"
+    assert app.description == "API for {{ cookiecutter.package_name }}"
     # Vérifie que la fonction get_project_version() a été appelée correctement
     expected_version = Path("VERSION").read_text().strip()
     assert app.version == expected_version
