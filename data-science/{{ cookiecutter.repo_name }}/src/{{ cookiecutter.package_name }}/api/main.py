@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from {{ cookiecutter.package_name }}.app.routes import router
+from {{ cookiecutter.package_name }}.api.routes import router
 from pathlib import Path
 
 def get_project_version() -> str:
