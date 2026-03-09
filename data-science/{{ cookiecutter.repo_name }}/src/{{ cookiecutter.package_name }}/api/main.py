@@ -4,7 +4,10 @@ from pathlib import Path
 
 def get_project_version() -> str:
     version_file = Path(__file__).resolve().parents[3] / "VERSION"
-    return version_file.read_text().strip()
+    try:
+        return version_file.read_text().strip()
+    except Exception:
+        return "0.1.0"
 
 
 app = FastAPI(

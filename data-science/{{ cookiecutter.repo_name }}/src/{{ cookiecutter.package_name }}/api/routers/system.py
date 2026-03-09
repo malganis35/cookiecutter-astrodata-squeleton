@@ -5,7 +5,7 @@ router = APIRouter(tags=["system"])
 
 def get_project_version() -> str:
     # Adjusting path to find VERSION at project root
-    version_file = Path(__file__).resolve().parents[5] / "VERSION"
+    version_file = Path(__file__).resolve().parents[4] / "VERSION"
     try:
         return version_file.read_text().strip()
     except Exception:
