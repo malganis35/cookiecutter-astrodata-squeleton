@@ -14,14 +14,15 @@ app = FastAPI(
 )
 
 
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+app.include_router(base.router)
+app.include_router(system.router)
+app.include_router(greetings.router)
 
 
-@app.get("/version")
-def version():
-    return {"version": Path("VERSION").read_text().strip()}
+def main():  # pragma: no cover
+    import uvicorn
+    uvicorn.run("project_name.api.main:app", host="0.0.0.0", port=8000, reload=True)
 
 
-app.include_router(router)
+if __name__ == "__main__":
+    main()

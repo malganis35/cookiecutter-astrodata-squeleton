@@ -137,7 +137,7 @@
    HERO SECTION
    =========================== */
 .hero {
-    padding: var(--spacing-sm) 0 var(--spacing-md) 0;
+    padding: 0 0 var(--spacing-md) 0;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -164,7 +164,7 @@
     font-size: clamp(2.5rem, 5vw, 4rem);
     font-weight: 800;
     line-height: 1.15;
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
     letter-spacing: -0.03em;
 }
 
@@ -187,7 +187,7 @@
 .hero-subtitle {
     font-size: 1.15rem;
     color: var(--text-secondary);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
     max-width: 700px;
     line-height: 1.7;
 }
@@ -231,14 +231,14 @@
 
 /* Minimize top padding of the main container */
 .block-container {
-    padding-top: 1.5rem !important;
-    padding-bottom: 2rem !important;
+    padding-top: 0rem !important;
+    padding-bottom: 0rem !important;
+    margin-top: -2rem !important;
 }
 
 /* Hide the default Streamlit header bar to save space */
 header[data-testid="stHeader"] {
     background-color: transparent !important;
-    height: 0;
 }
 
 /* Streamlit Containers as Cards - Force transparency and visibility */
@@ -276,6 +276,11 @@ header[data-testid="stHeader"] {
 }
 
 /* Sidebar styling */
+[data-testid="stSidebarContent"] {
+    padding-top: 1rem !important;
+    background-color: var(--bg-main) !important;
+}
+
 .css-1639w78,
 .st-emotion-cache-6q9sum {
     background-color: var(--bg-main) !important;

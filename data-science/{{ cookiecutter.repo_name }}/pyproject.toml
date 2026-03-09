@@ -27,6 +27,7 @@ dependencies = [
     "gitingest>=0.1.5",
     "uvicorn>=0.30",
     "pygwalker>=0.4.9",
+    "openpyxl>=3.1.5",
 ]
 
 [dependency-groups]
@@ -41,6 +42,7 @@ dev = [
 
 [project.scripts]
 {{ cookiecutter.package_name }}-app = "app.streamlit_app:main"
+{{ cookiecutter.package_name }}-api = "{{ cookiecutter.package_name }}.api.main:main"
 
 [build-system]
 requires = ["setuptools>=68.0.0", "uv>=0.3.0"]

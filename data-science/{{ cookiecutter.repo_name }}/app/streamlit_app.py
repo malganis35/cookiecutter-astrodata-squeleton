@@ -10,7 +10,7 @@ from pygwalker.api.streamlit import StreamlitRenderer
 def set_page_config():
     logger.info("Initializing page layout")
     st.set_page_config(
-        page_title="{{ cookiecutter.project_name }} - UI",
+        page_title="project_name - UI",
         page_icon="📊",
         layout="wide"
     )
@@ -38,7 +38,7 @@ def display_hero():
                 <span class="hero-title-highlight">project_name</span>
             </h1>
             <p class="hero-subtitle">
-                A example of Streamlit interface demo for {{ cookiecutter.project_name }} project.
+                A example of Streamlit interface demo for project_name project.
             </p>
         </div>
     """, unsafe_allow_html=True)
@@ -48,47 +48,56 @@ def sidebar():
     logger.info("Setting up sidebar")
     with st.sidebar:
         # Company Logo
-        st.image("https://img.freepik.com/vecteurs-libre/modele-logo-donnees-professionnelles_23-2149227039.jpg", use_container_width=True)
+        st.image("https://img.freepik.com/vecteurs-libre/modele-logo-donnees-professionnelles_23-2149227039.jpg", width=150)
         st.markdown("---")
         
         st.subheader("📁 Data Settings")
-        dataset_file = st.file_uploader("Upload Parquet Dataset", type=["parquet"])
-        
-        st.session_state["dataset_choice"] = st.selectbox(
-            "Reference Dataset", 
-            ["Iris", "Titanic", "Adult"]
-        )
+        dataset_file = st.file_uploader("Upload Dataset", type=["parquet", "csv", "xlsx", "xls"])
         
         st.session_state["gen_count"] = st.number_input(
-            "Samples to generate", value=100, min_value=1
+            "Lignes à afficher", value=100, min_value=1
         )
         
         st.markdown("---")
         st.info("Configuration loaded from .streamlit/config.toml")
     return dataset_file
 
-def handle_pygwalker(dataset_file):
-    """Integrates PyGWalker for interactive visualization."""
+def load_data(dataset_file):
+    """Centralized data loading logic with session state management."""
     if dataset_file is not None:
-        st.markdown("---")
-        st.subheader("🔍 Interactive Data Explorer")
+        # Check if a new file has been uploaded
+        file_name = dataset_file.name.lower()
+        if st.session_state.get("current_file") != file_name:
+            # Clear previous data and renderer to force reload
+            if "pyg_data" in st.session_state:
+                del st.session_state.pyg_data
+            if "pyg_renderer" in st.session_state:
+                del st.session_state.pyg_renderer
+            st.session_state["current_file"] = file_name
+            logger.info(f"New file detected: {file_name}. Clearing session state.")
 
         if "pyg_data" not in st.session_state:
             try:
-                # Read parquet into session state to avoid re-loading
-                st.session_state.pyg_data = pd.read_parquet(dataset_file)
-                logger.info("Dataset loaded into session state")
+                # Detect file type and load accordingly
+                if file_name.endswith(".parquet"):
+                    st.session_state.pyg_data = pd.read_parquet(dataset_file)
+                elif file_name.endswith(".csv"):
+                    st.session_state.pyg_data = pd.read_csv(dataset_file)
+                elif file_name.endswith((".xlsx", ".xls")):
+                    st.session_state.pyg_data = pd.read_excel(dataset_file)
+                
+                logger.info(f"Dataset '{file_name}' loaded into session state")
             except Exception as e:
-                st.error(f"Error reading parquet: {e}")
-                return
-
-        if "pyg_renderer" not in st.session_state:
-            # Initialize the renderer
-            st.session_state.pyg_renderer = StreamlitRenderer(st.session_state.pyg_data)
-
-        st.session_state.pyg_renderer.explorer()
+                st.error(f"Error reading file: {e}")
+                return False
     else:
-        st.info("💡 Upload a Parquet file in the sidebar to unlock the Interactive Explorer.")
+        # File was removed
+        if "pyg_data" in st.session_state:
+            del st.session_state.pyg_data
+        if "pyg_renderer" in st.session_state:
+            del st.session_state.pyg_renderer
+        st.session_state["current_file"] = None
+    return True
 
 # --- MAIN EXECUTION ---
 def main():
@@ -96,37 +105,44 @@ def main():
     load_assets()  # Load style.css assets
     
     dataset_file = sidebar()
+    load_data(dataset_file)
     display_hero()
 
-    # Metrics Section - Uses glassmorphism from style.css
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.metric("System Status", "Operational")
-    with col2:
-        st.metric("Version", "0.1.0")
-    with col3:
-        st.metric("Target Samples", st.session_state.get("gen_count", 0))
-
-    st.markdown("---")
-
     # Interactive Tabs
-    tab_summary, tab_explore = st.tabs(["⚡ Generation Studio", "🔍 Visual Analytics"])
+    tab_summary, tab_explore = st.tabs(["📋 Dataset Viewer", "🔍 Visual Analytics"])
 
     with tab_summary:
-        st.subheader("Synthetic Data Generation")
-        if st.button("Generate Data"):
-            with st.spinner("Processing generation logic..."):
-                logger.info(f"Generating {st.session_state['gen_count']} rows")
-                # Placeholder for generation logic
-                df_results = pd.DataFrame({
-                    "Feature_A": [1.5, 2.3, 3.1],
-                    "Feature_B": ["Active", "Pending", "Active"]
-                })
-                st.dataframe(df_results, use_container_width=True)
-                st.success("Generation complete!")
+        if "pyg_data" in st.session_state:
+            st.subheader("General Information")
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Nb Lines", f"{len(st.session_state.pyg_data):,}".replace(",", " "))
+            with col2:
+                st.metric("Nb Columns", len(st.session_state.pyg_data.columns))
+            with col3:
+                st.metric("Filename", st.session_state.get("current_file", "Inconnu"))
+            
+            st.markdown("---")
+            st.subheader("Statistics")
+            if st.button("📊 Generate the statistics"):
+                st.dataframe(st.session_state.pyg_data.describe().T, width='stretch')
+            
+            st.markdown("---")
+            st.subheader("Dataset Preview")
+            rows_to_show = st.session_state.get("gen_count", 100)
+            st.dataframe(st.session_state.pyg_data.head(rows_to_show), width='stretch')
+        else:
+            st.info("💡 Please import a dataset from the left menu.")
 
     with tab_explore:
-        handle_pygwalker(dataset_file)
+        if "pyg_data" in st.session_state:
+            st.markdown("---")
+            st.subheader("🔍 Interactive Data Explorer")
+            if "pyg_renderer" not in st.session_state:
+                st.session_state.pyg_renderer = StreamlitRenderer(st.session_state.pyg_data)
+            st.session_state.pyg_renderer.explorer()
+        else:
+            st.info("💡 Please import a dataset from the left menu to unlock the Interactive Data Explorer.")
 
 if __name__ == "__main__":
     logger.info("Starting Streamlit App execution")
