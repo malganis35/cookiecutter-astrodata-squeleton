@@ -6,13 +6,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Description
-{{ cookiecutter.project_description }}
+{{ cookiecutter.description }}
 
 ## 🚀 Features
-{{ cookiecutter.project_features }}
+Here are the main features of this package:
+- feature 1
+- feature 2
 
 ## 🏗️ Architecture
-{{ cookiecutter.project_architecture }}
+Additionnal information can be found in the [ARCHITECTURE.md](ARCHITECTURE.md) file.
 
 ## 🛠️ Installation
 
