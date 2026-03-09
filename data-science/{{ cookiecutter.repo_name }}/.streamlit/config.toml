@@ -14,12 +14,12 @@ showErrorDetails = false
 [browser]
 # Optimisation de la navigation et vie privée
 gatherUsageStats = false
-showSidebarNavigation = false
+# showSidebarNavigation = false
 
 [server]
 # Optimisation des performances serveur
-compressResponse = true
-enableCORS = false
+# compressResponse = true
+# enableCORS = false
 enableXsrfProtection = true
 maxUploadSize = 500
 
