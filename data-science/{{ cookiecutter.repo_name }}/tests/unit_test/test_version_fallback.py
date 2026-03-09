@@ -1,8 +1,8 @@
 import pytest
 from pathlib import Path
 from unittest.mock import patch
-from project_name.api.main import get_project_version as get_main_version
-from project_name.api.routers.system import get_project_version as get_system_version
+from {{ cookiecutter.package_name }}.api.main import get_project_version as get_main_version
+from {{ cookiecutter.package_name }}.api.routers.system import get_project_version as get_system_version
 
 def test_main_version_fallback():
     """Tests the fallback version logic in main.py when VERSION file is missing or unreadable."""
