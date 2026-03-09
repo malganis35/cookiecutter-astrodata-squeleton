@@ -1,8 +1,7 @@
 import pytest
 from fastapi.testclient import TestClient
 from {{ cookiecutter.package_name }}.api.main import app
-
-client = TestClient(app)
+from pathlib import Path
 
 client = TestClient(app)
 
