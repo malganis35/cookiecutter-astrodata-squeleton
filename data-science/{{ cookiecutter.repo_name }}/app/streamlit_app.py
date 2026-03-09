@@ -10,7 +10,7 @@ from pygwalker.api.streamlit import StreamlitRenderer
 def set_page_config():
     logger.info("Initializing page layout")
     st.set_page_config(
-        page_title="Project Name - Data Studio",
+        page_title="{{ cookiecutter.project_name }} - UI",
         page_icon="📊",
         layout="wide"
     )
@@ -38,7 +38,7 @@ def display_hero():
                 <span class="hero-title-highlight">project_name</span>
             </h1>
             <p class="hero-subtitle">
-                Generate synthetic datasets and explore your information through an advanced interactive studio.
+                A example of Streamlit interface demo for {{ cookiecutter.project_name }} project.
             </p>
         </div>
     """, unsafe_allow_html=True)
