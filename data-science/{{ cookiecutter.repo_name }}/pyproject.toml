@@ -1,5 +1,22 @@
 [project]
-license = { text = "{% if cookiecutter.open_source_license == "MIT" %}MIT{% elif cookiecutter.open_source_license == "BSD-3-Clause" %}BSD-3{% endif %}" }name = "{{ cookiecutter.package_name }}"
+license = { text = "{% if cookiecutter.open_source_license == "MIT" %}MIT{% elif cookiecutter.open_source_license == "BSD-3-Clause" %}BSD-3{% endif %}" }
+name = "{{ cookiecutter.package_name }}"
+version = "0.1.0"
+description = "{{ cookiecutter.description }}"
+readme = "README.md"
+authors = [
+    { name = "{{ cookiecutter.author_name }}", email = "astrodata@astrodata.com" },
+]
+maintainers = [
+    { name = "{{ cookiecutter.author_name }}", email = "astrodata@astrodata.com" },
+]
+keywords = ["python", "astrodata", "data-science"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+requires-python = ">={{ cookiecutter.python_version }}"
+
 dependencies = [
     "loguru>=0.7.3",
     "pretty-errors>=1.2.25",
@@ -22,23 +39,7 @@ dev = [
 ]
 
 [project.scripts]
-name = "{{ cookiecutter.package_name }}"
-version = "0.1.0"
-description = "{{ cookiecutter.description }}"
-readme = "README.md"
-authors = [
-    { name = "{{ cookiecutter.author_name }}", email = "astrodata@astrodata.com" },
-]
-maintainers = [
-    { name = "{{ cookiecutter.author_name }}", email = "astrodata@astrodata.com" },
-]
-keywords = ["python", "astrodata", "data-science"]
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "Operating System :: OS Independent",
-]
-requires-python = ">=3.12"
-cleanmatch-app = "app.streamlit_app:main"
+{{ cookiecutter.package_name }}-app = "app.streamlit_app:main"
 
 [build-system]
 requires = ["setuptools>=68.0.0", "uv>=0.3.0"]
