@@ -1,8 +1,8 @@
 /* ===========================
-   VARIABLES CSS
+   CSS VARIABLES
    =========================== */
 :root {
-    /* Couleurs sémantiques - Défaut (Light par défaut) */
+    /* Semantic colors - Default (Light by default) */
     --bg-main: #f0f4f8;
     --bg-card: #ffffff;
     --bg-glass: rgba(255, 255, 255, 0.85);
@@ -25,7 +25,7 @@
     --shadow-card: 0 4px 20px rgba(148, 163, 184, 0.15);
     --shadow-hover: 0 10px 30px rgba(102, 126, 234, 0.2);
 
-    /* Couleurs de marque */
+    /* Brand colors */
     --color-primary: #667eea;
     --color-secondary: #764ba2;
     --color-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -38,11 +38,11 @@
     --color-text-secondary: var(--text-secondary);
     --color-border: var(--border-color);
 
-    /* Typographie */
+    /* Typography */
     --font-display: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 
-    /* Espacements */
+    /* Spacings */
     --spacing-xs: 0.5rem;
     --spacing-sm: 1rem;
     --spacing-md: 2rem;
@@ -63,7 +63,7 @@
 }
 
 /* ===========================
-   FOND ANIMÉ
+   ANIMATED BACKGROUND
    =========================== */
 .grid-background {
     position: fixed;

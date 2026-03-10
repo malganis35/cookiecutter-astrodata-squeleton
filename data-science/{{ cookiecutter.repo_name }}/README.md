@@ -77,17 +77,17 @@ docker-compose down
 
 Additionnal commands to contribute to the project can be found in the [CONTRIBUTING.md](CONTRIBUTING.md) file.
 
-1. Initialisez l'environnement de développement :
+1. Initialize the development environment:
 ```bash
 make dev
 ```
 
-2. Vérifiez la qualité du code (Lint/Type/Test) :
+2. Verify code quality (Lint/Type/Test):
 ```bash
 make all
 ```
 
-3. Lancez les tests rapidement :
+3. Launch tests quickly:
 ```bash
 make test-fast
 ```
