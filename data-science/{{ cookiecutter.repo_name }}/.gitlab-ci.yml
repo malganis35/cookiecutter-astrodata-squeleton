@@ -71,7 +71,7 @@ pytest:
     - uv run --native-tls --python ${VERSION} --extra test pytest
   parallel:
     matrix:
-      - VERSION: ['3.10', '3.11', '3.12']
+      - VERSION: {{ cookiecutter.python_matrix }}
 
 
 # Versioning + changelog (release)
