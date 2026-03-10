@@ -69,7 +69,7 @@ clean: ## Remove temporary files and caches
 digest: ## Generate the project digest
 	@echo "Generating project digest..."
 	uv run --with gitingest gitingest .
-	- explorer.exe .
+	@$(OPEN) .
 
 bump: ## Bump the project version (using commitizen)
 	uv run cz bump
@@ -87,3 +87,25 @@ help: ## Display this help
 	@echo ""
 	@echo "Targets:"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2}'
+
+###################################################################
+# UTILS
+###################################################################
+
+# 1. Detect the OS
+ifeq ($(OS),Windows_NT)
+    OPEN := explorer.exe
+else
+    # 2. If Linux, check if it's WSL
+    UNAME_S := $(shell uname -s)
+    IS_WSL := $(shell grep -i microsoft /proc/version 2>/dev/null)
+
+    ifeq ($(UNAME_S),Darwin)
+        OPEN := open
+    else ifneq ($(IS_WSL),)
+        # If WSL, we can use the explorer from Windows
+        OPEN := explorer.exe
+    else
+        OPEN := xdg-open
+    endif
+endif
