@@ -6,12 +6,17 @@ from {{ cookiecutter.package_name }}.api.routers import base, greetings, system
 
 
 def get_project_version() -> str:
-    """Get the project version from the VERSION file or default to 0.1.0."""
-    version_file = Path(__file__).resolve().parents[3] / "VERSION"
+    """Get the project version from package metadata or fallback to VERSION file."""
+    import importlib.metadata
+
     try:
-        return version_file.read_text().strip()
-    except Exception:
-        return "0.1.0"
+        return importlib.metadata.version("{{ cookiecutter.package_name }}")
+    except importlib.metadata.PackageNotFoundError:
+        version_file = Path(__file__).resolve().parents[3] / "VERSION"
+        try:
+            return version_file.read_text().strip()
+        except Exception:
+            return "0.1.0"
 
 
 app = FastAPI(

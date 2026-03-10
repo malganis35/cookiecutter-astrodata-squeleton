@@ -11,5 +11,5 @@ def say_hello() -> dict[str, str]:
 
 @router.get("/bonjour")
 def say_bonjour() -> dict[str, str]:
-    """Return a hello world message in French (currently identical to English)."""
-    return {"message": "Hello world!"}
+    """Return a hello world message in French."""
+    return {"message": "Bonjour le monde !"}
