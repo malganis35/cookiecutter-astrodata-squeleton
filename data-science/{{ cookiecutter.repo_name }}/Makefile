@@ -1,6 +1,8 @@
 # Makefile for the {{ cookiecutter.project_name }} project
 
-.PHONY: help install dev format lint typecheck test test-fast all check run clean
+.PHONY: help install dev-install format lint typecheck test test-fast all check run clean up down digest bump release
+
+.DEFAULT_GOAL := help
 
 ###################################################################
 # SETUP
