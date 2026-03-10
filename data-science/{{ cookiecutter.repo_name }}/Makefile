@@ -69,7 +69,7 @@ clean: ## Remove temporary files and caches
 digest: ## Generate the project digest
 	@echo "Generating project digest..."
 	uv run --with gitingest gitingest .
-	explorer.exe .
+	- explorer.exe .
 
 bump: ## Bump the project version (using commitizen)
 	uv run cz bump

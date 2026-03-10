@@ -5,10 +5,10 @@ version = "0.1.0"
 description = "{{ cookiecutter.description }}"
 readme = "README.md"
 authors = [
-    { name = "{{ cookiecutter.author_name }}", email = "astrodata@astrodata.com" },
+    { name = "{{ cookiecutter.author_name }}", email = "[EMAIL_ADDRESS]" },
 ]
 maintainers = [
-    { name = "{{ cookiecutter.author_name }}", email = "astrodata@astrodata.com" },
+    { name = "{{ cookiecutter.author_name }}", email = "[EMAIL_ADDRESS]" },
 ]
 keywords = ["python", "astrodata", "data-science"]
 classifiers = [
