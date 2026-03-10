@@ -31,13 +31,13 @@ python_lint:
   stage: check
   image: *default_image
   script:
-    - uv run --native-tls --extra lint ruff check .
+    - uv run --native-tls --group dev ruff check .
 
 python_format:
   stage: check
   image: *default_image
   script:
-    - uv run --native-tls --extra lint ruff format --check .
+    - uv run --native-tls --group dev ruff format --check .
 
 # Tests unitaires
 coverage:
@@ -47,7 +47,7 @@ coverage:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    - uv run --native-tls --extra test pytest
+    - uv run --native-tls --group dev pytest
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
   artifacts:
     when: always
@@ -68,7 +68,7 @@ pytest:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    - uv run --native-tls --python ${VERSION} --extra test pytest
+    - uv run --native-tls --python ${VERSION} --group dev pytest
   parallel:
     matrix:
       - VERSION: {{ cookiecutter.python_matrix }}
