@@ -47,7 +47,7 @@ dev = [
 {{ cookiecutter.package_name }}-api = "{{ cookiecutter.package_name }}.api.main:main"
 
 [build-system]
-requires = ["setuptools>=68.0.0", "uv>=0.3.0"]
+requires = ["setuptools>=68.0.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools]
