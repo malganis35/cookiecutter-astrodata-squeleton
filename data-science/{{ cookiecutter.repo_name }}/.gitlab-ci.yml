@@ -1,5 +1,5 @@
 variables:
-  UV_VERSION: "0.5"
+  UV_VERSION: "0.6"
   PYTHON_VERSION: "3.12"
   BASE_LAYER: bookworm-slim
   UV_LINK_MODE: copy  # GitLab CI build dir requires copy mode
@@ -37,16 +37,15 @@ python_format:
   stage: check
   image: *default_image
   script:
-    - uv run --native-tls --extra lint ruff format .
+    - uv run --native-tls --extra lint ruff format --check .
 
 # Tests unitaires
 coverage:
   stage: test
   image: *default_image
   rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: on_success
-    - when: never
   script:
     - uv run --native-tls --extra test pytest --cov=src/ tests/ --cov-report term --cov-report xml:coverage.xml --junitxml=report.xml # --cov-config=.coveragerc
   coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
@@ -66,11 +65,10 @@ pytest:
   stage: test
   image: *default_image
   rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: on_success
-    - when: never
   script:
-    - - uv run --native-tls --python $VERSION --extra test pytest
+    - uv run --native-tls --python ${VERSION} --extra test pytest
   parallel:
     matrix:
       - VERSION: ['3.10', '3.11', '3.12']
