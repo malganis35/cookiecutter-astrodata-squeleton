@@ -15,6 +15,7 @@ dev: install ## Install dependencies and pre-commit hooks
 	uv run pre-commit install
 
 format: ## Format the code with ruff
+	uv run ruff check --fix src/ tests/ app/
 	uv run ruff format src/ tests/ app/
 
 lint: ## Check code cleanliness with ruff (check + format)

@@ -1,37 +1,39 @@
-import streamlit as st
-import pandas as pd
-from io import BytesIO
 from pathlib import Path
-from loguru import logger
+
+import pandas as pd
 import pretty_errors  # noqa: F401
+import streamlit as st
+from loguru import logger
 from pygwalker.api.streamlit import StreamlitRenderer
+from streamlit.runtime.uploaded_file_manager import UploadedFile
+
 
 # --- PAGE CONFIGURATION ---
-def set_page_config():
+def set_page_config() -> None:
+    """Initialize the page layout and configuration."""
     logger.info("Initializing page layout")
-    st.set_page_config(
-        page_title="{{ cookiecutter.project_name }} - UI",
-        page_icon="📊",
-        layout="wide"
-    )
+    st.set_page_config(page_title="{{ cookiecutter.project_name }} - UI", page_icon="📊", layout="wide")
+
 
 # --- ASSET LOADING ---
-def load_assets():
-    """Loads the custom CSS and background animations."""
+def load_assets() -> None:
+    """Load the custom CSS and background animations."""
     css_path = Path(__file__).parent / "assets" / "style.css"
     if css_path.exists():
         with open(css_path) as f:
-            st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
-    
+            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
     # Inject animated background elements defined in style.css
     st.markdown('<div class="grid-background"></div>', unsafe_allow_html=True)
     st.markdown('<div class="glow-orb glow-orb-1"></div>', unsafe_allow_html=True)
     st.markdown('<div class="glow-orb glow-orb-2"></div>', unsafe_allow_html=True)
 
+
 # --- UI COMPONENTS ---
-def display_hero():
-    """Displays the Hero section using the project's CSS classes."""
-    st.markdown("""
+def display_hero() -> None:
+    """Display the Hero section using the project's CSS classes."""
+    st.markdown(
+        """
         <div class="hero">
             <h1 class="hero-title">
                 <span class="hero-title-line">Data Control Center</span>
@@ -41,32 +43,37 @@ def display_hero():
                 A example of Streamlit interface demo for {{ cookiecutter.project_name }} project.
             </p>
         </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
-def sidebar():
-    """Handles sidebar configurations and file uploads."""
+
+def sidebar() -> UploadedFile | None:
+    """Handle sidebar configurations and file uploads."""
     logger.info("Setting up sidebar")
     with st.sidebar:
         # Company Logo
-        st.image("https://img.freepik.com/vecteurs-libre/modele-logo-donnees-professionnelles_23-2149227039.jpg", width=150)
+        st.image(
+            "https://img.freepik.com/vecteurs-libre/modele-logo-donnees-professionnelles_23-2149227039.jpg", width=150
+        )
         st.markdown("---")
-        
+
         st.subheader("📁 Data Settings")
         dataset_file = st.file_uploader("Upload Dataset", type=["parquet", "csv", "xlsx", "xls"])
-        
-        st.session_state["gen_count"] = st.number_input(
-            "Lignes à afficher", value=100, min_value=1
-        )
-        
+
+        st.session_state["gen_count"] = st.number_input("Lignes à afficher", value=100, min_value=1)
+
         st.markdown("---")
         st.info("Configuration loaded from .streamlit/config.toml")
     return dataset_file
 
+
 # --- CACHING OPTIMIZATION ---
 @st.cache_data(show_spinner="Chargement des données...")
-def get_cached_dataframe(file_bytes, file_name: str):
-    """Utilise le cache de Streamlit pour éviter de recharger le fichier à chaque interaction."""
+def get_cached_dataframe(file_bytes: bytes, file_name: str) -> pd.DataFrame | None:
+    """Use Streamlit's cache to avoid reloading the file on every interaction."""
     import io
+
     if file_name.endswith(".parquet"):
         return pd.read_parquet(io.BytesIO(file_bytes))
     elif file_name.endswith(".csv"):
@@ -75,12 +82,13 @@ def get_cached_dataframe(file_bytes, file_name: str):
         return pd.read_excel(io.BytesIO(file_bytes))
     return None
 
-def load_data(dataset_file):
-    """Centralized data loading logic using Streamlit caching."""
+
+def load_data(dataset_file: UploadedFile | None) -> bool:
+    """Centralize data loading logic using Streamlit caching."""
     if dataset_file is not None:
         file_name = dataset_file.name.lower()
         st.session_state["current_file"] = file_name
-        
+
         try:
             # On passe les bytes au cache pour permettre le hachage par Streamlit
             st.session_state.pyg_data = get_cached_dataframe(dataset_file.getvalue(), file_name)
@@ -95,11 +103,13 @@ def load_data(dataset_file):
         st.session_state["current_file"] = None
     return True
 
+
 # --- MAIN EXECUTION ---
-def main():
+def main() -> None:
+    """Run the main application flow."""
     set_page_config()
     load_assets()  # Load style.css assets
-    
+
     dataset_file = sidebar()
     load_data(dataset_file)
     display_hero()
@@ -117,16 +127,16 @@ def main():
                 st.metric("Nb Columns", len(st.session_state.pyg_data.columns))
             with col3:
                 st.metric("Filename", st.session_state.get("current_file", "Inconnu"))
-            
+
             st.markdown("---")
             st.subheader("Statistics")
             if st.button("📊 Generate the statistics"):
-                st.dataframe(st.session_state.pyg_data.describe().T, width='stretch')
-            
+                st.dataframe(st.session_state.pyg_data.describe().T, width="stretch")
+
             st.markdown("---")
             st.subheader("Dataset Preview")
             rows_to_show = st.session_state.get("gen_count", 100)
-            st.dataframe(st.session_state.pyg_data.head(rows_to_show), width='stretch')
+            st.dataframe(st.session_state.pyg_data.head(rows_to_show), width="stretch")
         else:
             st.info("💡 Please import a dataset from the left menu.")
 
@@ -134,23 +144,24 @@ def main():
         if "pyg_data" in st.session_state:
             st.markdown("---")
             st.subheader("🔍 Interactive Data Explorer")
-            
+
             # Optimal parameters for Pygwalker
             if "pyg_renderer" not in st.session_state:
                 # use_kernel_calc=True protect the RAM of the webbrowser by delegating the computation to the backend
                 # themeKey="streamlit" force the UI to respect the light/dark mode of your app
                 st.session_state.pyg_renderer = StreamlitRenderer(
                     st.session_state.pyg_data,
-                    spec="./app/assets/pygwalker_config.json", # Optionnel: save of the UI config
+                    spec="./app/assets/pygwalker_config.json",  # Optionnel: save of the UI config
                     env="streamlit",
                     themeKey="streamlit",
-                    use_kernel_calc=True 
+                    use_kernel_calc=True,
                 )
-            
+
             # Display the explorer
             st.session_state.pyg_renderer.explorer()
         else:
             st.info("💡 Please import a dataset from the left menu to unlock the Interactive Data Explorer.")
+
 
 if __name__ == "__main__":
     logger.info("Starting Streamlit App execution")

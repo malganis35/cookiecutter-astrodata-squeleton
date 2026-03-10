@@ -1,8 +1,12 @@
-from fastapi import FastAPI
-from {{ cookiecutter.package_name }}.api.routers import system, greetings, base
 from pathlib import Path
 
+from fastapi import FastAPI
+
+from {{ cookiecutter.package_name }}.api.routers import base, greetings, system
+
+
 def get_project_version() -> str:
+    """Get the project version from the VERSION file or default to 0.1.0."""
     version_file = Path(__file__).resolve().parents[3] / "VERSION"
     try:
         return version_file.read_text().strip()
@@ -12,7 +16,7 @@ def get_project_version() -> str:
 
 app = FastAPI(
     title="{{ cookiecutter.package_name }}",
-    description="API for {{ cookiecutter.package_name }}",
+    description="API for {{ cookiecutter.package_name }} package",
     version=get_project_version(),
 )
 
@@ -22,8 +26,10 @@ app.include_router(system.router)
 app.include_router(greetings.router)
 
 
-def main():  # pragma: no cover
+def main() -> None:  # pragma: no cover
+    """Run the FastAPI application using uvicorn."""
     import uvicorn
+
     uvicorn.run("{{ cookiecutter.package_name }}.api.main:app", host="0.0.0.0", port=8000, reload=True)
 
 
