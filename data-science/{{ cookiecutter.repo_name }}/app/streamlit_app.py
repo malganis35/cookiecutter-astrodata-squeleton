@@ -61,7 +61,7 @@ def sidebar() -> UploadedFile | None:
         st.subheader("📁 Data Settings")
         dataset_file = st.file_uploader("Upload Dataset", type=["parquet", "csv", "xlsx", "xls"])
 
-        st.session_state["gen_count"] = st.number_input("Lignes à afficher", value=100, min_value=1)
+        st.session_state["gen_count"] = st.number_input("Rows to show", value=100, min_value=1)
 
         st.markdown("---")
         st.info("Configuration loaded from .streamlit/config.toml")
@@ -69,7 +69,7 @@ def sidebar() -> UploadedFile | None:
 
 
 # --- CACHING OPTIMIZATION ---
-@st.cache_data(show_spinner="Chargement des données...")
+@st.cache_data(show_spinner="Loading data...")
 def get_cached_dataframe(file_bytes: bytes, file_name: str) -> pd.DataFrame | None:
     """Use Streamlit's cache to avoid reloading the file on every interaction."""
     import io
@@ -90,7 +90,7 @@ def load_data(dataset_file: UploadedFile | None) -> bool:
         st.session_state["current_file"] = file_name
 
         try:
-            # On passe les bytes au cache pour permettre le hachage par Streamlit
+            # Pass bytes to cache to allow hashing by Streamlit
             st.session_state.pyg_data = get_cached_dataframe(dataset_file.getvalue(), file_name)
             logger.info(f"Dataset '{file_name}' loaded successfully")
         except Exception as e:
@@ -126,7 +126,7 @@ def main() -> None:
             with col2:
                 st.metric("Nb Columns", len(st.session_state.pyg_data.columns))
             with col3:
-                st.metric("Filename", st.session_state.get("current_file", "Inconnu"))
+                st.metric("Filename", st.session_state.get("current_file", "Unknown"))
 
             st.markdown("---")
             st.subheader("Statistics")
@@ -151,7 +151,7 @@ def main() -> None:
                 # themeKey="streamlit" force the UI to respect the light/dark mode of your app
                 st.session_state.pyg_renderer = StreamlitRenderer(
                     st.session_state.pyg_data,
-                    spec="./app/assets/pygwalker_config.json",  # Optionnel: save of the UI config
+                    spec="./app/assets/pygwalker_config.json",  # Optional: save of the UI config
                     env="streamlit",
                     themeKey="streamlit",
                     use_kernel_calc=True,
