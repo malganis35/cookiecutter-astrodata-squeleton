@@ -19,8 +19,8 @@ def test_api_version() -> None:
     response = client.get("/version")
     assert response.status_code == 200
 
-    # Lecture dynamique du fichier pour la comparaison
-    expected_version = Path("VERSION").read_text().strip()
+    # Lecture dynamique du fichier pour la comparaison depuis la racine du projet
+    expected_version = (Path(__file__).resolve().parents[2] / "VERSION").read_text().strip()
     assert response.json() == {"version": expected_version}
 
 
@@ -50,5 +50,5 @@ def test_app_metadata() -> None:
     assert app.title == "{{ cookiecutter.package_name }}"
     assert app.description == "API for {{ cookiecutter.package_name }} package"
     # Vérifie que la fonction get_project_version() a été appelée correctement
-    expected_version = Path("VERSION").read_text().strip()
+    expected_version = (Path(__file__).resolve().parents[2] / "VERSION").read_text().strip()
     assert app.version == expected_version
