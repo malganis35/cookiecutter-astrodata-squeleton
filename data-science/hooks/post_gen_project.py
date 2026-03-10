@@ -72,7 +72,7 @@ AstroData Squeleton is finished:
 
 Next Steps:
 1. Navigate to your new project
-2. Create a repo on Gitlab and push the code
+2. Create a repo on Gitlab/Github and push the code
 3. Init the Sphinx doc in the ./docs/ folder (if not say yes in the questions)
 4. Make the use make test_environment, make dev-install to setup the project
 5. Start your project and put your *.py file in the ./src/{{ cookiecutter.package_name }}
