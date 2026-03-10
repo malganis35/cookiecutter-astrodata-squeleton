@@ -131,12 +131,12 @@ def main() -> None:
             st.markdown("---")
             st.subheader("Statistics")
             if st.button("📊 Generate the statistics"):
-                st.dataframe(st.session_state.pyg_data.describe().T, width="stretch")
+                st.dataframe(st.session_state.pyg_data.describe().T, use_container_width=True)
 
             st.markdown("---")
             st.subheader("Dataset Preview")
             rows_to_show = st.session_state.get("gen_count", 100)
-            st.dataframe(st.session_state.pyg_data.head(rows_to_show), width="stretch")
+            st.dataframe(st.session_state.pyg_data.head(rows_to_show), use_container_width=True)
         else:
             st.info("💡 Please import a dataset from the left menu.")
 
