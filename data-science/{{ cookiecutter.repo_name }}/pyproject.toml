@@ -22,22 +22,24 @@ dependencies = [
     "pretty-errors>=1.2.25",
     "python-dotenv>=1.1.1",
     "streamlit>=1.42.0",
-    "commitizen>=4.8.3",
     "fastapi>=0.111",
-    "gitingest>=0.1.5",
     "uvicorn>=0.30",
     "pygwalker>=0.4.9",
     "openpyxl>=3.1.5",
+    "pydantic>=2.7.0",
+    "pydantic-settings>=2.2.0",
 ]
 
 [dependency-groups]
 dev = [
     "pytest>=8.0.0",
     "pytest-cov>=4.1.0",
-    "pytest-mock==3.14.0",
+    "pytest-mock>=3.14.0",
     "ruff>=0.3.0",
     "mypy>=1.9.0",
     "pre-commit>=3.6.0",
+    "gitingest>=0.1.5",
+    "commitizen>=4.8.3",
 ]
 
 [project.scripts]
@@ -86,9 +88,7 @@ docstring-code-format = true
 strict = true
 ignore_missing_imports = true
 # Add Pydantic plugin to avoid false positive from the FastAPI model
-plugins = [
-    "pydantic.mypy"
-]
+plugins = ["pydantic.mypy"]
 # Strict config for Pydantic
 [tool.pydantic-mypy]
 init_forbid_extra = true
