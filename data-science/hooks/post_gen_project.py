@@ -38,7 +38,7 @@ def generate_nested_project():
         }
 
         cc(
-            "git@github.com:malganis35/cookiecutter-astrodata-squeleton.git",
+            "https://github.com/malganis35/cookiecutter-astrodata-squeleton.git",
             directory="sphinx-docs",
             extra_context=child_config,
             output_dir=os.path.join(os.getcwd(), "docs"),
