@@ -6,9 +6,9 @@ from cookiecutter.main import cookiecutter as cc
 
 def init_git():
     print("Init the git repo")
-    subprocess.call(['git', 'init', '--initial-branch=main'])
-    subprocess.call(['git', 'add', '.'])
-    subprocess.call(['git', 'commit', '-m', 'initial commit'])
+    subprocess.run(['git', 'init', '--initial-branch=main'], check=True)
+    subprocess.run(['git', 'add', '.'], check=True)
+    subprocess.run(['git', 'commit', '-m', 'initial commit'], check=True)
 
 def remove_licence():
     print("")
