@@ -6,11 +6,11 @@ from {{ cookiecutter.package_name }}.api.main import get_project_version
 def test_main_version_fallback() -> None:
     """Tests the fallback version logic in main.py when VERSION file is missing or unreadable."""
     with patch("pathlib.Path.read_text") as mock_read:
-        # On simule l'absence du fichier VERSION
+        # Simulate the absence of the VERSION file
         mock_read.side_effect = Exception("File not found")
 
-        # On appelle la fonction de récupération de version
+        # Call the version retrieval function
         version = get_project_version()
 
-        # On vérifie que le fallback s'active correctement
+        # Verify that the fallback activates correctly
         assert version == "0.1.0"
