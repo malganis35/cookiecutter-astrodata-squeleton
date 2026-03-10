@@ -1,8 +1,11 @@
 # --- Base Stage ---
 FROM python:{{ cookiecutter.python_version }}-slim AS base
 
-# Install uv from official image
+# Install uv and system dependencies
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
 
 # Set working directory
 WORKDIR /app
