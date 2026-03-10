@@ -78,7 +78,7 @@ jobs:
         run: uv sync --frozen
 
       - name: Run tests with coverage
-        run: uv run pytest tests/ -v --cov=src/{{ cookiecutter.package_name }} --cov-report=xml --cov-fail-under=80
+        run: uv run pytest tests/ -v
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4

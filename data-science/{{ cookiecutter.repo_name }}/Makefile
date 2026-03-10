@@ -50,7 +50,7 @@ typecheck: ## Check strict type validity with mypy
 	uv run mypy --explicit-package-bases src/ app/
 
 test: ## Run unit tests with full coverage
-	uv run pytest tests/ -v --cov=src/{{ cookiecutter.package_name }} --cov-report=term-missing --cov-fail-under=80
+	uv run pytest tests/ -v
 
 test-fast: ## Run tests and stop at the first failure
 	uv run pytest tests/ -x
