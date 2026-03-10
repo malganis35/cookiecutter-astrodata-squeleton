@@ -73,10 +73,7 @@ lint.ignore = [
     "D107",   # Missing docstring in `__init__`
     "D203",   # incorrect-blank-line-before-class
     "D213",   # multi-line-summary-second-line
-    "E501",   # line-too-long
     "C901",   # too complex
-    "ERA001", # commented out code
-    "D100",   # missing docstring
     "ERA001", # commented out code
 ]
 
