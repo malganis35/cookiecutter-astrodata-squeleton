@@ -112,4 +112,4 @@ jobs:
           uv venv virtual_env
           . virtual_env/bin/activate
           uv pip install dist/*.whl
-          python -c "import {{ cookiecutter.package_name }}; print(f'{{ cookiecutter.package_name }} version {{{ cookiecutter.package_name }}.__version__} installed successfully')"
+          python -c "import {{ cookiecutter.package_name }}; print('Package {{ cookiecutter.package_name }} imported successfully')"
