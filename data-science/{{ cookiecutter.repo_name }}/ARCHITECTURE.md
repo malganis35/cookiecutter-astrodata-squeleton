@@ -37,7 +37,7 @@ graph TD
 
 ## 📦 Component breakdown
 
-### 1. `src/{{ cookiecutter.package_name }}/` (Core Logic)
+### 1. `src/{{ cookiecutter.package_name }}/core` (Core Logic)
 This is the heartbeat of the project, independent of the delivery mechanism (API or App).
 
 | Module | Responsibility |
