@@ -70,18 +70,31 @@ def sidebar() -> UploadedFile | None:
     return dataset_file
 
 
+def sanitize_dataframe(df: pd.DataFrame) -> pd.DataFrame:
+    """Sanitize dataframe to avoid Arrow serialization errors by converting mixed-type object columns to strings."""
+    for col in df.columns:
+        if df[col].dtype == "object":
+            # Attempt to convert to string if it has mixed types (common fix for ArrowTypeError)
+            df[col] = df[col].astype(str)
+    return df
+
+
 # --- CACHING OPTIMIZATION ---
 @st.cache_data(show_spinner="Loading data...")
 def get_cached_dataframe(file_bytes: bytes, file_name: str) -> pd.DataFrame | None:
     """Use Streamlit's cache to avoid reloading the file on every interaction."""
     import io
 
+    df = None
     if file_name.endswith(".parquet"):
-        return pd.read_parquet(io.BytesIO(file_bytes))
+        df = pd.read_parquet(io.BytesIO(file_bytes))
     elif file_name.endswith(".csv"):
-        return pd.read_csv(io.BytesIO(file_bytes))
+        df = pd.read_csv(io.BytesIO(file_bytes))
     elif file_name.endswith((".xlsx", ".xls")):
-        return pd.read_excel(io.BytesIO(file_bytes))
+        df = pd.read_excel(io.BytesIO(file_bytes))
+
+    if df is not None:
+        return sanitize_dataframe(df)
     return None
 
 
@@ -142,12 +155,12 @@ def main() -> None:
             st.markdown("---")
             st.subheader("Statistics")
             if st.button("📊 Generate the statistics"):
-                st.dataframe(st.session_state.pyg_data.describe().T, use_container_width=True)
+                st.dataframe(st.session_state.pyg_data.describe().T, width="stretch")
 
             st.markdown("---")
             st.subheader("Dataset Preview")
             rows_to_show = st.session_state.get("gen_count", 100)
-            st.dataframe(st.session_state.pyg_data.head(rows_to_show), use_container_width=True)
+            st.dataframe(st.session_state.pyg_data.head(rows_to_show), width="stretch")
         else:
             st.info("💡 Please import a dataset from the left menu.")
 
@@ -159,12 +172,12 @@ def main() -> None:
             # Optimal parameters for Pygwalker
             if "pyg_renderer" not in st.session_state:
                 # use_kernel_calc=True protect the RAM of the webbrowser by delegating the computation to the backend
-                # themeKey="streamlit" force the UI to respect the light/dark mode of your app
+                # theme_key="streamlit" force the UI to respect the light/dark mode of your app
                 st.session_state.pyg_renderer = StreamlitRenderer(
                     st.session_state.pyg_data,
                     spec="./app/assets/pygwalker_config.json",  # Optional: save of the UI config
                     env="streamlit",
-                    themeKey="streamlit",
+                    theme_key="streamlit",
                     use_kernel_calc=True,
                 )
 
