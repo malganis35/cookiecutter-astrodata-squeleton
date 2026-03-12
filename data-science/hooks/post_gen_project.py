@@ -7,6 +7,7 @@ from cookiecutter.main import cookiecutter as cc
 def init_git():
     print("Init the git repo")
     subprocess.run(['git', 'init', '--initial-branch=main'], check=True)
+    subprocess.run(['uv', 'sync'], check=True)
     subprocess.run(['git', 'add', '.'], check=True)
     subprocess.run(['git', 'commit', '-m', 'initial commit'], check=True)
 
@@ -49,9 +50,6 @@ def generate_nested_project():
 
     except Exception as e:
         print(f"\033[91mERROR: {str(e)}\033[0m")
-        if os.path.exists("docs"):
-            shutil.rmtree("docs")
-        raise
     
 def initiate_docs():
     print("")

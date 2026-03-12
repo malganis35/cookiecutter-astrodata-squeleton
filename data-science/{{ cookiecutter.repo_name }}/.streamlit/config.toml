@@ -21,7 +21,7 @@ gatherUsageStats = false
 # compressResponse = true
 # enableCORS = false
 enableXsrfProtection = true
-maxUploadSize = 500
+maxUploadSize = 50
 
 [ui]
 # Hide remaining native elements (version dependent)
