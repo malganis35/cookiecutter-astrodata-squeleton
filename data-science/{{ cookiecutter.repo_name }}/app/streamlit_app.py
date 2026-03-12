@@ -87,19 +87,28 @@ def load_data(dataset_file: UploadedFile | None) -> bool:
     """Centralize data loading logic using Streamlit caching."""
     if dataset_file is not None:
         file_name = dataset_file.name.lower()
-        st.session_state["current_file"] = file_name
+        # Check if the file has changed (either different name or different object)
+        # We store the previous file reference to detect if a new upload occurred
+        prev_file = st.session_state.get("current_file_obj")
 
-        try:
-            # Pass bytes to cache to allow hashing by Streamlit
-            st.session_state.pyg_data = get_cached_dataframe(dataset_file.getvalue(), file_name)
-            logger.info(f"Dataset '{file_name}' loaded successfully")
-        except Exception as e:
-            st.error(f"Error reading file: {e}")
-            return False
+        if dataset_file != prev_file:
+            logger.info(f"New dataset detected: {file_name}. Resetting renderer.")
+            st.session_state.pop("pyg_renderer", None)
+            st.session_state["current_file_obj"] = dataset_file
+            st.session_state["current_file"] = file_name
+
+            try:
+                # Pass bytes to cache to allow hashing by Streamlit
+                st.session_state.pyg_data = get_cached_dataframe(dataset_file.getvalue(), file_name)
+                logger.info(f"Dataset '{file_name}' loaded successfully")
+            except Exception as e:
+                st.error(f"Error reading file: {e}")
+                return False
     else:
         # File was removed
         st.session_state.pop("pyg_data", None)
         st.session_state.pop("pyg_renderer", None)
+        st.session_state.pop("current_file_obj", None)
         st.session_state["current_file"] = None
     return True
 
