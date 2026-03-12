@@ -1,3 +1,5 @@
+"""Main Streamlit application for data visualization and exploration."""
+
 from pathlib import Path
 
 import pandas as pd

@@ -1,3 +1,5 @@
+"""System-related routes for the API, such as health and version checks."""
+
 from fastapi import APIRouter, Request
 
 router = APIRouter(tags=["system"])

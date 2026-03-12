@@ -1,3 +1,5 @@
+"""Unit tests for the FastAPI application endpoints."""
+
 from pathlib import Path
 
 from fastapi.testclient import TestClient

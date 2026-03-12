@@ -1,3 +1,5 @@
+"""Base routes for the API, including the welcome message."""
+
 from fastapi import APIRouter
 
 router = APIRouter(prefix="/base", tags=["base"])

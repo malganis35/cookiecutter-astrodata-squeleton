@@ -1,3 +1,5 @@
+"""Greeting routes for the API, supporting multiple languages."""
+
 from fastapi import APIRouter
 
 router = APIRouter(tags=["greetings"])
