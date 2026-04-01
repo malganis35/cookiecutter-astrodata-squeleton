@@ -1,6 +1,5 @@
 import os
 from pathlib import Path
-import shutil
 import subprocess
 from cookiecutter.main import cookiecutter as cc
 
