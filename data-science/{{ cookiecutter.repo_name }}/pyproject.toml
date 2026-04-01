@@ -133,4 +133,4 @@ changelog_message_template = """
 """
 
 [project.urls]
-homepage = "Code repo URL for your projects"
+homepage = "{{ cookiecutter.project_url }}"

@@ -4,6 +4,7 @@
     "package_name": "{{ cookiecutter.repo_name.lower().replace(' ', '_').replace('-', '_') }}",
     "author_name": "Your name (or your organization/company/team)",
     "author_email": "your.email@example.com",
+    "project_url": "https://github.com/your-org/your-repo",
     "description": "A short description of the project.",
     "open_source_license": [
         "No license file",
