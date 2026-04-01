@@ -13,6 +13,10 @@ repos:
       - id: detect-private-key
       - id: forbid-new-submodules
       - id: check-docstring-first
+  - repo: https://github.com/kynan/nbstripout
+    rev: 0.7.1
+    hooks:
+      - id: nbstripout
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.9.5
     hooks:
