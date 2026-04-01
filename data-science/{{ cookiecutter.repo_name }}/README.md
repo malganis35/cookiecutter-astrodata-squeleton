@@ -81,6 +81,7 @@ Maintain high code standards using the following commands:
 ├── app/                    # Streamlit application
 ├── dockerfiles/            # Multi-stage Dockerfile
 ├── docs/                   # Sphinx documentation and reports
+├── data/                   # Data directories (tip: use DVC for large files)
 ├── src/                    # Main source code
 │   └── {{ cookiecutter.package_name }}/
 │       ├── api/            # FastAPI implementation

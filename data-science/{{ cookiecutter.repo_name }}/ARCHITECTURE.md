@@ -71,6 +71,9 @@ Built with **FastAPI**, this layer exposes the core logic as RESTful endpoints:
    - **Offline**: Notebooks or scripts import from `src`.
    - **Online**: API (`src.api`) loads the model and serves predictions; Streamlit (`app/`) displays the results.
 
+> [!IMPORTANT]
+> **Data Versioning (DVC)**: This template is designed to be compatible with [DVC](https://dvc.org/). For datasets > 10MB, it is strongly recommended to initialize DVC (`dvc init`) and track large files in `data/` instead of committing them directly to Git.
+
 ---
 
 ## 🛠️ Technical Stack & Rationale
