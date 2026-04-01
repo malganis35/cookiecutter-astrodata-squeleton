@@ -27,6 +27,10 @@ def remove_precommit():
 def generate_nested_project():
     """Generate the Sphinx documentation with presets"""
     from cookiecutter.exceptions import CookiecutterException
+    import tempfile
+    import shutil
+    
+    temp_dir = tempfile.mkdtemp()
     try:
         child_config = {
             'project_name': "{{ cookiecutter.project_name }} Documentation",
@@ -42,10 +46,18 @@ def generate_nested_project():
             "https://github.com/malganis35/cookiecutter-astrodata-squeleton.git",
             directory="sphinx-docs",
             extra_context=child_config,
-            output_dir=os.path.join(os.getcwd(), "docs"),
+            output_dir=temp_dir,
             no_input=True,
             overwrite_if_exists=True
         )
+        
+        source = os.path.join(temp_dir, child_config['repo_name'])
+        destination = os.path.join(os.getcwd(), "docs")
+        
+        if os.path.exists(destination):
+            shutil.rmtree(destination)
+        shutil.copytree(source, destination)
+        
         print("\n✅ Documentation generated successfully in the docs/ folder\n")
 
     except CookiecutterException as e:
@@ -56,6 +68,8 @@ def generate_nested_project():
     except Exception as e:
         print(f"\033[91mUNEXPECTED ERROR: {e}\033[0m")
         raise
+    finally:
+        shutil.rmtree(temp_dir, ignore_errors=True)
     
 def initiate_docs():
     print("")
