@@ -50,7 +50,7 @@ This is the heartbeat of the project, independent of the delivery mechanism (API
 
 ### 2. `app/` (Frontend)
 Built with **Streamlit**, this layer provides a human-consumable interface for:
-- Exploaring datasets (`data/raw`, `data/processed`).
+- Exploring datasets (`data/raw`, `data/processed`).
 - Visualizing model performance.
 - Performing interactive "what-if" analysis.
 
