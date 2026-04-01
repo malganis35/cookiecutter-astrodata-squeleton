@@ -10,10 +10,7 @@
         "BSD-3-Clause"
     ],
     "python_version": "3.12.0",
-    "python_matrix": [
-        "['3.10', '3.11', '3.12']",
-        "Matrice of Python Versions to test"
-    ],
+    "python_matrix": ["3.10", "3.11", "3.12"],
     "install_precommit": [
         "yes",
         "no"
