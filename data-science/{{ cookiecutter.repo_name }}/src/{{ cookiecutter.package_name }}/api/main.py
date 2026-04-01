@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI
 
 from {{ cookiecutter.package_name }}.api.routers import base, greetings, system
+from {{ cookiecutter.package_name }}.core.utils import PROJECT_ROOT, ensure_dirs_exist
 
 
 def get_project_version() -> str:
@@ -14,12 +15,15 @@ def get_project_version() -> str:
     try:
         return importlib.metadata.version("{{ cookiecutter.package_name }}")
     except importlib.metadata.PackageNotFoundError:
-        version_file = Path(__file__).resolve().parents[3] / "VERSION"
+        version_file = PROJECT_ROOT / "VERSION"
         try:
             return version_file.read_text().strip()
         except Exception:
             return "0.1.0"
 
+
+# Initialize project directories on startup
+ensure_dirs_exist()
 
 app = FastAPI(
     title="{{ cookiecutter.package_name }}",
