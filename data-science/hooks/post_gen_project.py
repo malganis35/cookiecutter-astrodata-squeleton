@@ -26,6 +26,7 @@ def remove_precommit():
 
 def generate_nested_project():
     """Generate the Sphinx documentation with presets"""
+    from cookiecutter.exceptions import CookiecutterException
     try:
         child_config = {
             'project_name': "{{ cookiecutter.project_name }} Documentation",
@@ -47,8 +48,14 @@ def generate_nested_project():
         )
         print("\n✅ Documentation generated successfully in the docs/ folder\n")
 
+    except CookiecutterException as e:
+        print(f"\033[91mERROR: Failed to generate documentation: {e}\033[0m")
+        print("You can generate it manually later with: make docs")
+    except subprocess.CalledProcessError as e:
+        print(f"\033[91mERROR: Command failed: {e.cmd}\033[0m")
     except Exception as e:
-        print(f"\033[91mERROR: {str(e)}\033[0m")
+        print(f"\033[91mUNEXPECTED ERROR: {e}\033[0m")
+        raise
     
 def initiate_docs():
     print("")
