@@ -3,6 +3,9 @@ docs/site/
 # OSX Junk
 .DS_Store
 
+# Windows Junk
+*Zone.Identifier
+
 # test cache
 .cache/*
 tests/__pycache__/*
