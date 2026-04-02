@@ -116,8 +116,8 @@ def load_data(dataset_file: UploadedFile | None) -> bool:
                 # Pass bytes to cache to allow hashing by Streamlit
                 st.session_state.pyg_data = get_cached_dataframe(dataset_file.getvalue(), file_name)
                 logger.info(f"Dataset '{file_name}' loaded successfully")
-            except Exception as e:
-                st.error(f"Error reading file: {e}")
+            except (pd.errors.ParserError, pd.errors.EmptyDataError, ValueError, TypeError) as e:
+                st.error(f"Error reading file (invalid format or corrupted): {e}")
                 return False
     else:
         # File was removed

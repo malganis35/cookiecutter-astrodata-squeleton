@@ -18,7 +18,7 @@ def get_project_version() -> str:
         version_file = PROJECT_ROOT / "VERSION"
         try:
             return version_file.read_text().strip()
-        except Exception:
+        except (FileNotFoundError, PermissionError):
             return "0.1.0"
 
 
