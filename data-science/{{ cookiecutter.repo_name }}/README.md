@@ -96,6 +96,16 @@ Maintain high code standards using the following commands:
 └── pyproject.toml          # Project metadata and tool config
 ```
 
+## 💾 Data Management
+
+By default, the `data/` directory contains subfolders for different stages of your pipeline:
+- `raw/`: Original, immutable data dumps. Never modify these.
+- `interim/`: Intermediate data that has been transformed.
+- `processed/`: Final, canonical datasets ready for modeling.
+- `external/`: Data from third party sources.
+
+> **Note**: These directories are ignored by Git (via `.gitignore`) to prevent committing large datasets or sensitive information. We highly recommend using [DVC (Data Version Control)](https://dvc.org/) to version and track your datasets alongside your code.
+
 ## 🤝 Contributing
 1. Create a feature branch.
 2. Follow **Conventional Commits** (`feat:`, `fix:`, `docs:`, etc.).
