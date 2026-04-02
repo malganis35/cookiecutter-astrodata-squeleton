@@ -16,7 +16,7 @@ def get_project_version() -> str:
     except importlib.metadata.PackageNotFoundError:
         version_file = PROJECT_ROOT / "VERSION"
         try:
-            return version_file.read_text().strip()
+            return str(version_file.read_text().strip())
         except (FileNotFoundError, PermissionError):
             return "0.1.0"
 
