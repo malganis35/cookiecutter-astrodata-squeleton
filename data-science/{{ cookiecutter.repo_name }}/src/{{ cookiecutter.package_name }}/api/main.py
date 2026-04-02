@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI
 
 from {{ cookiecutter.package_name }}.api.routers import base, greetings, system
+from {{ cookiecutter.package_name }}.api.middlewares import LimitUploadSizeMiddleware
 from {{ cookiecutter.package_name }}.core.utils import PROJECT_ROOT, ensure_dirs_exist
 
 
@@ -30,6 +31,9 @@ app = FastAPI(
     description="API for {{ cookiecutter.package_name }} package",
     version=get_project_version(),
 )
+
+# Global upload size limit middleware
+app.add_middleware(LimitUploadSizeMiddleware)
 
 
 app.include_router(base.router)
