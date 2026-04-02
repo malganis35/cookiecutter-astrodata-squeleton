@@ -1,5 +1,6 @@
 """Unit tests for FastAPI middlewares."""
 
+import pytest
 from fastapi.testclient import TestClient
 
 from {{ cookiecutter.package_name }}.api.main import app
@@ -33,17 +34,16 @@ def test_request_without_content_length_passes() -> None:
     assert response.json() == {"status": "ok"}
 
 
-def test_custom_max_upload_size(monkeypatch: "pytest.MonkeyPatch") -> None:
+def test_custom_max_upload_size(monkeypatch: pytest.MonkeyPatch) -> None:
     """Test that the upload limit is properly loaded and enforced from the environment variable.
 
     We instantiate a local mock app because the global 'app' has already evaluated os.getenv
     during its import, making monkeypatch ineffective on it.
     """
-    import pytest  # noqa: F811
-
     monkeypatch.setenv("API_MAX_UPLOAD_SIZE", "100")
 
     from fastapi import FastAPI
+    
     from {{ cookiecutter.package_name }}.api.middlewares import LimitUploadSizeMiddleware
 
     test_app = FastAPI()

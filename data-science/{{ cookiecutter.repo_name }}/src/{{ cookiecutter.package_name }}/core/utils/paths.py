@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+
 def _find_project_root() -> Path:
     """Find the project root dynamically by looking for pyproject.toml."""
     current_dir = Path(__file__).resolve().parent

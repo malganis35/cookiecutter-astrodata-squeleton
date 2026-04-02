@@ -1,11 +1,9 @@
 """Main entry point for the FastAPI application."""
 
-from pathlib import Path
-
 from fastapi import FastAPI
 
-from {{ cookiecutter.package_name }}.api.routers import base, greetings, system
 from {{ cookiecutter.package_name }}.api.middlewares import LimitUploadSizeMiddleware
+from {{ cookiecutter.package_name }}.api.routers import base, greetings, system
 from {{ cookiecutter.package_name }}.core.utils import PROJECT_ROOT, ensure_dirs_exist
 
 
