@@ -14,7 +14,7 @@ def test_main_version_fallback() -> None:
 
         with patch("pathlib.Path.read_text") as mock_read:
             # Simulate the absence of the VERSION file
-            mock_read.side_effect = Exception("File not found")
+            mock_read.side_effect = FileNotFoundError("VERSION file not found")
 
             # Call the version retrieval function
             version = get_project_version()
