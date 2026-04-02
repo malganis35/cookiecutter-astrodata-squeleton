@@ -142,6 +142,7 @@ html_use_index = True
 #     "announcement": "<em>Announcement</em>: This is the test launch of the knowledge center",
 # }
 
+{% raw %}
 # -- Options LaTeX ------------------------------------------------------------
 
 # Configuration utilisateur
@@ -345,3 +346,4 @@ simplepdf_vars = {
     "bottom-center-content": '"Data Knowledge Center Documentation"',
     # 'bottom-right-content': 'string(heading)',
 }
+{% endraw %}
