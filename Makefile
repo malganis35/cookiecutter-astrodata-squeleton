@@ -12,3 +12,10 @@ validate:
 	@echo "🧹 Cleaning up..."
 	@rm -rf tmp_test
 	@echo "✨ Validation complete."
+
+bump: ## Bump the project version (using commitizen)
+	uv run --with commitizen cz bump
+
+release: ## Push the latest commits and tags to origin main
+	git push origin main --follow-tags
+	git push --tags
