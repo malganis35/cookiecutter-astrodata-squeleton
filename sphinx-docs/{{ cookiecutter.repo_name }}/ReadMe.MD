@@ -62,10 +62,30 @@ The documentation will be available locally (typically at `http://127.0.0.1:8001
 
 ### Building PDFs
 
-The project supports two methods for PDF generation:
+The project supports two methods for PDF generation. Both commands require prerequisite tools to work smoothly.
 
-* **LaTeX**: Requires a local TeX installation (`make latex_setup`) and uses the `xelatex` engine.
-* **SimplePDF**: A lighter alternative using `sphinx-simplepdf`.
+#### 1. LaTeX (High Quality & Customizable)
+This process uses the `xelatex` engine and relies on specific fonts (like DejaVu Sans) defined in the corporate theme.
+* **For Ubuntu/Debian users**, you can install all necessary dependencies automatically using:
+  ```bash
+  make latex_setup
+  ```
+  *(This runs `apt install` for `texlive-xetex`, `texlive-fonts-recommended` (which provides the DejaVu font), `latexmk`, and `fonts-liberation`)*
+
+* **For other operating systems (macOS, Windows, Fedora)**, ensure you manually install a full TeX distribution (like TeX Live, MiKTeX, or MacTeX) that includes:
+  - `xelatex` and `latexmk` engines
+  - The `texlive-fonts-recommended` package (critical for the DejaVu Sans font)
+
+Once the prerequisites are met, build the PDF with:
+```bash
+make pdf_build
+```
+
+#### 2. SimplePDF
+A lighter alternative using the Python `sphinx-simplepdf` library. No local LaTeX installation is required.
+```bash
+make simplepdf_build
+```
 
 
 ### CI/CD Deployment
