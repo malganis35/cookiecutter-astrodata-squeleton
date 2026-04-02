@@ -59,4 +59,3 @@ def test_find_project_root_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
     result = paths._find_project_root()
     # The fallback should return a valid Path (parents[4] from __file__)
     assert isinstance(result, Path)
-
