@@ -42,6 +42,12 @@ help: .env
 # COMMANDS (SETUP)                                                            #
 #################################################################################
 
+check-env: ## Check if uv and xelatex are installed
+	@echo "$(ccso)--> Checking environment dependencies...$(ccend)"
+	@command -v uv >/dev/null 2>&1 || { echo "$(ccred)ERROR: uv is not installed. Please install it first.$(ccend)"; exit 1; }
+	@command -v xelatex >/dev/null 2>&1 || { echo "$(ccred)ERROR: xelatex is not installed. PDF builds will fail. Please run 'make latex_setup'.$(ccend)"; exit 1; }
+	@echo "$(ccgreen)Environment check passed. Ready to build!$(ccend)"
+
 dev-install: ## Install Python Dependencies (Dev)
 	@echo "$(ccso)--> Install Python Dependencies (Dev)$(ccend)"
 	uv sync
@@ -92,7 +98,7 @@ livehtml:
 	@uv run sphinx-autobuild "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) --port=8001
 
 ## PDF Build with LateX
-pdf_build:
+pdf_build: check-env
 	- echo "$(ccso)--> Building PDF with LaTeX$(ccend)"
 	- make latexpdf LATEXMKOPTS="-interaction=nonstopmode"
 	- cp ./_build/latex/astrodata_documentation.pdf ./_build/
