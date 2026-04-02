@@ -15,7 +15,7 @@ class LimitUploadSizeMiddleware(BaseHTTPMiddleware):
     def __init__(self, app: ASGIApp, max_upload_size: int | None = None) -> None:
         super().__init__(app)
         # Default to 50MB if not specified
-        self.max_upload_size = max_upload_size or int(os.getenv("API_MAX_UPLOAD_SIZE", 52428800))
+        self.max_upload_size = max_upload_size or int(os.getenv("API_MAX_UPLOAD_SIZE", "52428800"))
 
     async def dispatch(
         self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
