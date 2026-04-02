@@ -1,0 +1,6 @@
+_build/
+.vscode/
+_templates/
+build/
+*.Identifier
+.python-version

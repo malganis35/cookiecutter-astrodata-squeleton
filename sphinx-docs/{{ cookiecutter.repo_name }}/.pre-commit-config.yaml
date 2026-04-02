@@ -1,0 +1,44 @@
+# Source:
+# https://medium.com/internet-of-technology/beautify-your-python-code-with-pre-commit-linters-a-step-by-step-guide-d63604d6120b
+# https://medium.com/marvelous-mlops/welcome-to-pre-commit-heaven-5b622bb8ebce
+exclude: ^tests/resources/
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      # check-merge-conflict: Detects and prevents merge conflict markers in files.
+      - id: check-merge-conflict
+      # check-ast: Checks the syntax and structure of Python code using the Abstract Syntax Tree (AST).
+      - id: check-ast
+      # check-yaml: Validates YAML files for syntax errors
+      - id: check-yaml
+        args: ["--unsafe"]
+      # check-toml: Validates TOML files for syntax errors.
+      - id: check-toml
+      # check-json: Validates JSON files for syntax errors.
+      - id: check-json
+      # Other useful hooks
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: detect-private-key
+      - id: check-docstring-first
+      # check-shebang-scripts-are-executable: Verifies that shebang scripts (scripts starting with #!/) are executable.
+      - id: check-shebang-scripts-are-executable
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+    rev: v0.9.7
+    hooks:
+      # Run the linter.
+      - id: ruff
+        args: [--fix]   # auto-corrige, ne bloque pas
+      # Run the formatter.
+      - id: ruff-format
+
+  # (Optionnel : si tu gardes isort malgré Ruff)
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: ["--profile", "black"]
