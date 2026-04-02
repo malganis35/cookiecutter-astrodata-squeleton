@@ -65,13 +65,13 @@ def generate_nested_project():
         )
         
         source = os.path.join(temp_dir, child_config['repo_name'])
-        destination = os.path.join(os.getcwd(), "docs")
+        destination = os.path.join(os.getcwd(), "docs", "project_documentation")
         
         if os.path.exists(destination):
             shutil.rmtree(destination)
         shutil.copytree(source, destination)
         
-        print("\n✅ Documentation generated successfully in the docs/ folder\n")
+        print("\n✅ Documentation generated successfully in the docs/project_documentation/ folder\n")
 
     except CookiecutterException as e:
         print(f"\033[91mERROR: Failed to generate documentation: {e}\033[0m")
@@ -106,7 +106,7 @@ AstroData Squeleton is finished:
 Next Steps:
 1. Navigate to your new project
 2. Create a repo on Gitlab/Github and push the code
-3. Init the Sphinx doc in the ./docs/ folder (if you chose yes)
+3. Init the Sphinx doc in the ./docs/project_documentation/ folder (if you chose yes)
 4. Use `make install` or `make dev-install` to setup the project
 5. Start your project and put your *.py files in the `./src/{{ cookiecutter.package_name }}` folder.
 
