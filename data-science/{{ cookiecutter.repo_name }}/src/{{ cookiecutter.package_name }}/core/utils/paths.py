@@ -2,8 +2,16 @@
 
 from pathlib import Path
 
-# PROJECT_ROOT is 5 levels up from this file (src/{{ cookiecutter.package_name }}/core/utils/paths.py)
-PROJECT_ROOT: Path = Path(__file__).resolve().parent.parent.parent.parent.parent
+def _find_project_root() -> Path:
+    """Find the project root dynamically by looking for pyproject.toml."""
+    current_dir = Path(__file__).resolve().parent
+    for parent in [current_dir] + list(current_dir.parents):
+        if (parent / "pyproject.toml").exists():
+            return parent
+    # Fallback to the default structure if not found
+    return Path(__file__).resolve().parents[4]
+
+PROJECT_ROOT: Path = _find_project_root()
 
 # Data directories
 DATA_DIR: Path = PROJECT_ROOT / "data"
