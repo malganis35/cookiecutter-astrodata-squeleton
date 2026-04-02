@@ -1,3 +1,12 @@
+"""
+Pre-generation Cookiecutter hook.
+
+This script executes before the project directory is actually created.
+It handles pre-flight checks such as validating the user input (e.g., Python version).
+If any check fails, the script will exit with a non-zero status code,
+aborting the project generation.
+"""
+
 import re
 import sys
 
@@ -9,6 +18,7 @@ def validate_python_version():
         sys.exit(1)
 
 def creation_note():
+    """Print an informational note regarding the Cookiecutter template version."""
     print("""
 
 ===============================================================================

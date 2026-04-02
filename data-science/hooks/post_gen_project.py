@@ -1,9 +1,19 @@
+"""
+Post-generation Cookiecutter hook.
+
+This script executes immediately after the template files have been generated.
+It handles cleanup tasks (removing unused configuration files), initializing
+external sub-projects (like Sphinx documentation), setting up the Git 
+repository, and printing a final informative message for the user.
+"""
+
 import os
 from pathlib import Path
 import subprocess
 from cookiecutter.main import cookiecutter as cc
 
 def init_git():
+    """Initialize a git repository in the generated project and make the first commit."""
     print("Init the git repo")
     subprocess.run(['git', 'init', '--initial-branch=main'], check=True)
     subprocess.run(['uv', 'sync'], check=True)
@@ -11,12 +21,14 @@ def init_git():
     subprocess.run(['git', 'commit', '-m', 'initial commit'], check=True)
 
 def remove_licence():
+    """Remove the LICENSE file if the user opted out of open source licensing."""
     print("")
     print("Remove LICENSE if 'No license file'")
     if "{{ cookiecutter.open_source_license }}" == "No license file":
         Path("LICENSE").unlink()
 
 def remove_precommit():
+    """Remove the .pre-commit-config.yaml file if the user opted out of pre-commit."""
     print("")
     if "{{ cookiecutter.install_precommit }}" == "no":
         print("Remove .pre-commit-config.yaml as requested")
@@ -72,6 +84,7 @@ def generate_nested_project():
         shutil.rmtree(temp_dir, ignore_errors=True)
     
 def initiate_docs():
+    """Determine whether to generate the nested Sphinx documentation based on user input."""
     print("")
     print("Initiate Sphinx documentation if yes")
     if "{{ cookiecutter.initialize_sphinx_documentation }}" == "yes":
@@ -79,6 +92,7 @@ def initiate_docs():
         generate_nested_project()
         
 def ending_note():
+    """Print helpful instructions and next steps after successful project generation."""
     print("""
 ===============================================================================
 *** END NOTE ***
