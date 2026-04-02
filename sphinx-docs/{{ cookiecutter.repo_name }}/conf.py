@@ -99,10 +99,14 @@ exclude_patterns = [
 # html_theme = 'alabaster'
 html_theme = "{{ cookiecutter.sphinx_theme }}"
 
+{% if cookiecutter.sphinx_theme == 'furo' -%}
 html_theme_options = {
     "top_of_page_button": "edit",
     "source_edit_link": "https://gitlab.com/xxxx/knowledge/edit/main/{filename}",
 }
+{% else -%}
+html_theme_options = {}
+{% endif -%}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
