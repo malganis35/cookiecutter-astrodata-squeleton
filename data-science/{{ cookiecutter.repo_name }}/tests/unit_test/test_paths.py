@@ -40,3 +40,23 @@ def test_ensure_dirs_exist(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> N
         paths.ensure_dirs_exist()
     except FileExistsError:
         pytest.fail("ensure_dirs_exist raised FileExistsError unexpectedly on second call.")
+
+
+def test_find_project_root_fallback(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test that _find_project_root falls back when no pyproject.toml is found.
+
+    Mocks Path.exists to always return False, forcing the fallback return on line 13.
+    """
+    original_exists = Path.exists
+
+    def fake_exists(self: Path) -> bool:
+        if self.name == "pyproject.toml":
+            return False
+        return original_exists(self)
+
+    monkeypatch.setattr(Path, "exists", fake_exists)
+
+    result = paths._find_project_root()
+    # The fallback should return a valid Path (parents[4] from __file__)
+    assert isinstance(result, Path)
+
