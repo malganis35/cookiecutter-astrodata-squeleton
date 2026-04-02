@@ -95,7 +95,7 @@ livehtml:
 pdf_build:
 	- echo "$(ccso)--> Building PDF with LaTeX$(ccend)"
 	- make latexpdf LATEXMKOPTS="-interaction=nonstopmode"
-	- cp ./_build/latex/caotrido_documentation.pdf ./_build/
+	- cp ./_build/latex/astrodata_documentation.pdf ./_build/
 
 ## PDF Build with SimplePDF
 simplepdf_build:
