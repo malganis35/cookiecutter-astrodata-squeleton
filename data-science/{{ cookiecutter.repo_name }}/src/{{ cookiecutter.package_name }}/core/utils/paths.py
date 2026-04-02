@@ -12,6 +12,7 @@ def _find_project_root() -> Path:
     # Fallback to the default structure if not found
     return Path(__file__).resolve().parents[4]
 
+
 PROJECT_ROOT: Path = _find_project_root()
 
 # Data directories
@@ -29,6 +30,7 @@ NOTEBOOKS_DIR: Path = PROJECT_ROOT / "notebooks"
 
 # Logs directory
 LOGS_DIR: Path = PROJECT_ROOT / "logs"
+
 
 def ensure_dirs_exist() -> None:
     """Create directories if they don't exist."""

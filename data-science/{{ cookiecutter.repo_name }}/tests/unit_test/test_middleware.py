@@ -43,7 +43,7 @@ def test_custom_max_upload_size(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setenv("API_MAX_UPLOAD_SIZE", "100")
 
     from fastapi import FastAPI
-    
+
     from {{ cookiecutter.package_name }}.api.middlewares import LimitUploadSizeMiddleware
 
     test_app = FastAPI()

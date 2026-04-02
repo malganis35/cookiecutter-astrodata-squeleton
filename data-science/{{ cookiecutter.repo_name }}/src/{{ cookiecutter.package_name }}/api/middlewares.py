@@ -21,9 +21,7 @@ class LimitUploadSizeMiddleware(BaseHTTPMiddleware):
         # Default to 50MB if not specified
         self.max_upload_size = max_upload_size or int(os.getenv("API_MAX_UPLOAD_SIZE", "52428800"))
 
-    async def dispatch(
-        self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
-    ) -> Response:
+    async def dispatch(self, request: Request, call_next: Callable[[Request], Awaitable[Response]]) -> Response:
         """Process the request and reject it if the payload exceeds the size limit."""
         content_length = request.headers.get("content-length")
 
@@ -31,9 +29,7 @@ class LimitUploadSizeMiddleware(BaseHTTPMiddleware):
             logger.warning(f"Request too large: {content_length} bytes (limit: {self.max_upload_size})")
             return JSONResponse(
                 status_code=413,
-                content={
-                    "detail": f"Request entity too large. Maximum allowed size is {self.max_upload_size} bytes."
-                },
+                content={"detail": f"Request entity too large. Maximum allowed size is {self.max_upload_size} bytes."},
             )
 
         return await call_next(request)

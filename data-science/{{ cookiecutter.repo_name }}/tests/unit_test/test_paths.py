@@ -1,7 +1,9 @@
 """Unit tests for project path utilities."""
 
-import pytest
 from pathlib import Path
+
+import pytest
+
 from {{ cookiecutter.package_name }}.core.utils import paths
 
 
