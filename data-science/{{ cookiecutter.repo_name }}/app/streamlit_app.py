@@ -18,12 +18,21 @@ def set_page_config() -> None:
 
 
 # --- ASSET LOADING ---
+@st.cache_data(show_spinner=False)
+def _read_css_file(css_path: Path) -> str:
+    """Read the CSS file and cache it to avoid I/O on every rerender."""
+    if css_path.exists():
+        with open(css_path) as f:
+            return f.read()
+    return ""
+
+
 def load_assets() -> None:
     """Load the custom CSS and background animations."""
     css_path = Path(__file__).parent / "assets" / "style.css"
-    if css_path.exists():
-        with open(css_path) as f:
-            st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    css_content = _read_css_file(css_path)
+    if css_content:
+        st.markdown(f"<style>{css_content}</style>", unsafe_allow_html=True)
 
     # Inject animated background elements defined in style.css
     st.markdown('<div class="grid-background"></div>', unsafe_allow_html=True)
