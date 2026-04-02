@@ -98,9 +98,14 @@ Next Steps:
 ===============================================================================
     """)
 
-# Main : Execute all the functions
-remove_licence()
-remove_precommit()
-initiate_docs()
-init_git()
-ending_note()
+def main():
+    """Run all post-generation hook tasks in order."""
+    remove_licence()
+    remove_precommit()
+    initiate_docs()
+    init_git()
+    ending_note()
+
+
+if __name__ == "__main__":
+    main()

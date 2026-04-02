@@ -23,6 +23,11 @@ For example:
 
     """)
 
-# Main : Execute all the functions
-validate_python_version()
-creation_note()
+def main():
+    """Run the pre-generation project checks and notifications."""
+    validate_python_version()
+    creation_note()
+
+
+if __name__ == "__main__":
+    main()

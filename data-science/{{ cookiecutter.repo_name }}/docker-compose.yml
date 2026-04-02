@@ -9,7 +9,11 @@ services:
       - .env
     ports:
       - "8000:8000"
-    restart: on-failure:5
+    restart: on-failure
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
     develop:
       watch:
         - action: sync
