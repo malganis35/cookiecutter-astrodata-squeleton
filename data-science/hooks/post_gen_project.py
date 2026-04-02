@@ -47,11 +47,12 @@ def generate_nested_project():
         child_config = {
             'project_name': "{{ cookiecutter.project_name }} Documentation",
             'repo_name': "{{ cookiecutter.package_name }}",
-            'author_name': "Astrodata",
+            'author_name': "{{ cookiecutter.author_name }}",
+            'author_email': "{{ cookiecutter.author_email }}",
             'description': "Project documentation",
-            'open_source_license': "No license file",
+            'open_source_license': "{{ cookiecutter.open_source_license }}",
             'sphinx_theme': "furo",
-            'python_interpreter': "python3"
+            'python_interpreter': "{{ cookiecutter.python_interpreter }}"
         }
 
         cc(
