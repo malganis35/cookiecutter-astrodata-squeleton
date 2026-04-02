@@ -37,7 +37,11 @@ services:
       - .env
     ports:
       - "8501:8501"
-    restart: on-failure:5
+    restart: on-failure
+    deploy:
+      restart_policy:
+        condition: on-failure
+        max_attempts: 5
     depends_on:
       api:
         condition: service_healthy
