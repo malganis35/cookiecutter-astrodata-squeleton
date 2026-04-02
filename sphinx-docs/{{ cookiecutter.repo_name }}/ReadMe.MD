@@ -92,6 +92,27 @@ knowledge_center/
     └── .github/             # GitHub Actions workflows
 ```
 
+## 🎨 Customizing the Graphic Chart
+
+To personalize the documentation and make it match your organization's branding (especially for PDF / LaTeX generation), follow these steps:
+
+### 1. Update Graphics & Logos
+The images used for the PDF generation are stored in the `_static/pdf/` directory. Simply replace the following files with your own while keeping the same dimensions/formats for best results:
+* `logo.png`: Main logo used on the cover and headers.
+* `background.png`: Background image for the cover page.
+* `page-background.pdf`: Background watermark used across all PDF pages.
+
+### 2. Update Colors & Fonts
+To modify the corporate color palette and styling for the LaTeX PDFs, open `conf.py` and locate the `latex_elements` dictionary. You can define your own HEX colors in the preamble under the `%%% --- Palette corporate ---` section:
+
+```latex
+\definecolor{CorpPrimary}{HTML}{E2001A}
+\definecolor{CorpBlack}{HTML}{000000}
+\definecolor{CorpGrey}{HTML}{666666}
+```
+
+You can also adjust the HTML theme settings directly inside the `html_theme_options` variable in `conf.py`.
+
 ---
 
 ## 🤝 Contributing
