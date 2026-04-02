@@ -6,7 +6,7 @@
 Welcome to the {{ cookiecutter.project_name }}
 ====================================================
 
-.. image:: _static/emlyon.png
+.. image:: _static/astrodata.png
    :width: 800px
    :align: center
 

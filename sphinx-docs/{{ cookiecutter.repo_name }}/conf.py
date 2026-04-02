@@ -131,7 +131,7 @@ highlight_language = "none"
 
 favicons = [
     {
-        "href": "emlyon_logo.png"
+        "href": "astrodata_logo.png"
     },  # => use `_static/icon.svg`
 ]
 
