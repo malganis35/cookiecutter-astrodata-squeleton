@@ -2,7 +2,7 @@ Sphinx Introduction
 ===========================
 
 :Authors:
-    Cao Tri DO <caotri.do@astraviz.fr>
+    Cao Tri DO <caotri.do@astrodata.fr>
 :Version: 2026-02
 
 Introduction to Sphinx

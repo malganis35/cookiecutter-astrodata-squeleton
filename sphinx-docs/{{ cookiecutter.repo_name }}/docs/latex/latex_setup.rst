@@ -3,7 +3,7 @@ LaTeX Setup
 ===================
 
 :Authors:
-    Cao Tri DO <caotri.do@astraviz.fr>
+    Cao Tri DO <caotri.do@astrodata.fr>
 :Version: 2026-02
 
 LaTeX is a powerful typesetting system that is widely used for creating scientific and technical documents. It is particularly well-suited for documents that contain complex mathematical equations, tables, and figures. In this section, we will provide an introduction to LaTeX and how to set it up for your documentation projects.

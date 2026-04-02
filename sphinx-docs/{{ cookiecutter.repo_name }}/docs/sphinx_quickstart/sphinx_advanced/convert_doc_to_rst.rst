@@ -2,7 +2,7 @@ Convert a Word File to reStructuredText with Pandoc
 ==========================================================
 
 :Authors:
-    Cao Tri DO <caotri.do@astraviz.fr>
+    Cao Tri DO <caotri.do@astrodata.fr>
 :Version: 2026-02
 
 To convert a Word file (.docx) to a reStructuredText (.rst) file with Pandoc, follow these steps:

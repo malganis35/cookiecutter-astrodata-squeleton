@@ -2,7 +2,7 @@ Sphinx Cheat Sheet
 ==================
 
 :Authors:
-    Cao Tri DO <caotri.do@astraviz.fr>
+    Cao Tri DO <caotri.do@astrodata.fr>
 :Version: 2026-02
 
 source: https://docs.typo3.org/m/typo3/docs-how-to-document/main/en-us/WritingReST/CheatSheet.html

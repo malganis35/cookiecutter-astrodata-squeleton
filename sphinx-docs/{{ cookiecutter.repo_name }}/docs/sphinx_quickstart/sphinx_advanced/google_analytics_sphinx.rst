@@ -2,7 +2,7 @@ Adding Google Analytics to Sphinx
 =================================
 
 :Authors:
-    Cao Tri DO <caotri.do@astraviz.fr>
+    Cao Tri DO <caotri.do@astrodata.fr>
 :Version: 2026-02
 
 source: https://dailystuff.nl/blog/2023/adding-google-analytics-in-sphinx

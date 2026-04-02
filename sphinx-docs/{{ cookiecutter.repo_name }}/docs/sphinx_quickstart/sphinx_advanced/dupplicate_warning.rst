@@ -2,7 +2,7 @@ Get rid of "duplicate label" warning in Sphinx
 ==============================================
 
 :Authors:
-    Cao Tri DO <caotri.do@astraviz.fr>
+    Cao Tri DO <caotri.do@astrodata.fr>
 :Version: 2026-02
 
 source: https://stackoverflow.com/questions/62631362/get-rid-of-duplicate-label-warning-in-sphinx
