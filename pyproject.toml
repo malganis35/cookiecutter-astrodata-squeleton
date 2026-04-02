@@ -1,6 +1,6 @@
 [project]
 name = "cookiecutter-astrodata-squeleton"
-version = "0.1.0"
+version = "0.2.0"
 license = "MIT"
 description = "Cookiecutter templates for Astrodata data-science and Sphinx documentation projects."
 readme = "README.md"
@@ -30,7 +30,7 @@ py-modules = []
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "v$version"
-version = "0.1.0"
+version = "0.2.0"
 version_files = ["pyproject.toml:^version ="]
 bump_message = "chore(release): bump version $current_version → $new_version"
 update_changelog_on_bump = true
