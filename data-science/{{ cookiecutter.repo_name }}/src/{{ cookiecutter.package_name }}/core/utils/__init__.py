@@ -1,3 +1,5 @@
+"""Core utilities for path management and project structure."""
+
 from .paths import (
     PROJECT_ROOT,
     DATA_DIR,

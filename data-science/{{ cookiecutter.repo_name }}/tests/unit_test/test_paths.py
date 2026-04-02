@@ -1,10 +1,13 @@
+"""Unit tests for project path utilities."""
+
 import pytest
 from pathlib import Path
 from {{ cookiecutter.package_name }}.core.utils import paths
 
-def test_ensure_dirs_exist(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
-    """
-    Test that ensure_dirs_exist creates the physical directories correctly.
+
+def test_ensure_dirs_exist(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    """Test that ensure_dirs_exist creates the physical directories correctly.
+
     Uses pytest's tmp_path fixture to avoid polluting the actual file system.
     """
     # Override the module-level constants with our temporary paths
@@ -14,14 +17,14 @@ def test_ensure_dirs_exist(tmp_path: Path, monkeypatch: pytest.MonkeyPatch):
     monkeypatch.setattr(paths, "EXTERNAL_DATA_DIR", tmp_path / "data" / "external")
     monkeypatch.setattr(paths, "MODELS_DIR", tmp_path / "models")
     monkeypatch.setattr(paths, "LOGS_DIR", tmp_path / "logs")
-    
+
     # Ensure they don't exist prior to calling the function
     assert not (tmp_path / "data" / "raw").exists()
     assert not (tmp_path / "logs").exists()
-    
+
     # Execute the function
     paths.ensure_dirs_exist()
-    
+
     # Verify that all directories were physically created
     assert (tmp_path / "data" / "raw").exists()
     assert (tmp_path / "data" / "interim").exists()
