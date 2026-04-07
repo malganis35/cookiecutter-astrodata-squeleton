@@ -113,3 +113,18 @@ jobs:
           . virtual_env/bin/activate
           uv pip install dist/*.whl
           python -c "import {{ cookiecutter.package_name }}; print('Package {{ cookiecutter.package_name }} imported successfully')"
+
+  docker-build:
+    needs: tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker image (API)
+        run: |
+          docker build \
+            --build-arg BUILD_VERSION=$(cat VERSION) \
+            --build-arg BUILD_REVISION=${% raw %}${{ github.sha }}{% endraw %} \
+            --build-arg BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
+            --target api \
+            -t api:latest \
+            -f dockerfiles/Dockerfile .

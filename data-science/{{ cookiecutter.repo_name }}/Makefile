@@ -30,6 +30,15 @@ up: ## Start the API and Streamlit app concurrently
 down: ## Stop the API and Streamlit app
 	docker-compose down
 
+docker-build: ## Build Docker images with OCI labels
+	BUILD_VERSION=$$(cat VERSION) \
+	BUILD_REVISION=$$(git rev-parse HEAD 2>/dev/null || echo "unknown") \
+	BUILD_DATE=$$(date -u +%Y-%m-%dT%H:%M:%SZ) \
+	docker-compose build
+
+docker-inspect: ## Inspect OCI labels of the built image
+	@docker inspect --format='{{"{{"}}json .Config.Labels{{"}}"}}' {{ cookiecutter.repo_name }}-api | python3 -m json.tool
+
 ###################################################################
 # CODE QUALITY
 ###################################################################

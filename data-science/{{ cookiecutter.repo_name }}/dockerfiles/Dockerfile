@@ -24,6 +24,24 @@ USER appuser
 ENV PYTHONPATH=/app/src
 ENV PATH="/app/.venv/bin:$PATH"
 
+# --- Labels ---
+
+# Static labels (from project metadata)
+LABEL org.opencontainers.image.title="{{ cookiecutter.project_name }}" \
+      org.opencontainers.image.description="{{ cookiecutter.description }}" \
+      org.opencontainers.image.authors="{{ cookiecutter.author_email }}" \
+      org.opencontainers.image.source="{{ cookiecutter.project_url }}" \
+      org.opencontainers.image.licenses="{{ cookiecutter.open_source_license }}"
+
+# Dynamic labels (injected at build time)
+ARG BUILD_VERSION="dev"
+ARG BUILD_REVISION="unknown"
+ARG BUILD_DATE="unknown"
+
+LABEL org.opencontainers.image.version="${BUILD_VERSION}" \
+      org.opencontainers.image.revision="${BUILD_REVISION}" \
+      org.opencontainers.image.created="${BUILD_DATE}"
+
 # --- API Stage ---
 FROM base AS api
 

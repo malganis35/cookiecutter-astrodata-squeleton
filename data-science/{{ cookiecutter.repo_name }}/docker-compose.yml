@@ -4,6 +4,10 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile
       target: api
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-dev}
+        BUILD_REVISION: ${BUILD_REVISION:-unknown}
+        BUILD_DATE: ${BUILD_DATE:-unknown}
     container_name: {{ cookiecutter.repo_name }}-api
     env_file:
       - .env
@@ -32,6 +36,10 @@ services:
       context: .
       dockerfile: dockerfiles/Dockerfile
       target: streamlit
+      args:
+        BUILD_VERSION: ${BUILD_VERSION:-dev}
+        BUILD_REVISION: ${BUILD_REVISION:-unknown}
+        BUILD_DATE: ${BUILD_DATE:-unknown}
     container_name: {{ cookiecutter.repo_name }}-ui
     env_file:
       - .env
