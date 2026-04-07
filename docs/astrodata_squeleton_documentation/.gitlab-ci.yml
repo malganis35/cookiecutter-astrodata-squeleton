@@ -1,0 +1,46 @@
+image: python:3.12-slim
+
+stages:
+  - build
+  - deploy
+
+before_script:
+  - apt-get update && apt-get install -y curl git
+  - curl -LsSf https://astral.sh/uv/install.sh | sh
+  - export PATH="$HOME/.local/bin:$PATH"
+
+build_docs:
+  stage: build
+  script:
+    - uv sync --frozen
+    - uv run sphinx-build -b html ./ public_tmp/
+  artifacts:
+    paths:
+      - public_tmp
+  only:
+    - main
+
+pages:
+  stage: deploy
+  script:
+    - mv public_tmp public
+    - echo "Documentation déployée sur GitLab Pages" > public/deploy.txt
+  artifacts:
+    paths:
+      - public
+  only:
+    - main
+
+deploy_to_azure:
+  stage: deploy
+  image: node:20
+  needs: ["build_docs"]
+  script:
+    - npm install -g @azure/static-web-apps-cli
+    - >
+      swa deploy ./public_tmp
+      --deployment-token $SWA_DEPLOY_TOKEN
+      --app-name "asw-knowledge-center"
+      --env "Production"
+      --verbose
+  when: manual

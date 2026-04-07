@@ -1,0 +1,67 @@
+[project]
+name = "astrodata_squeleton_documentation"
+version = "0.1.0"
+description = "Documentation for Astrodata Documentation"
+
+authors = [
+    { name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.author_email }}" },
+]
+maintainers = [
+    { name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.author_email }}" },
+]
+readme = "ReadMe.MD"
+requires-python = ">=3.12"
+keywords = ["python", "documentation", "data-science"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "commitizen>=4.9.1",
+    "furo>=2025.7.19",
+    "myst-parser>=4.0.1",
+    "openpyxl>=3.1.5",
+    "pandas>=2.3.2",
+    "pandoc>=2.4",
+    "setuptools>=80.9.0",
+    "sphinx>=8.2.3",
+    "sphinx-autobuild>=2025.8.25",
+    "sphinx-book-theme>=1.1.4",
+    "sphinx-copybutton>=0.5.2",
+    "sphinx-favicon>=1.0.1",
+    "sphinx-git>=11.0.0",
+    "sphinx-inline-tabs>=2023.4.21",
+    "sphinx-last-updated-by-git>=0.3.8",
+    "sphinx-simplepdf>=1.6.0",
+    "sphinx-view>=0.2.0",
+    "sphinxcontrib-bibtex>=2.6.5",
+    "sphinxcontrib-googleanalytics==0.4",
+    "sphinxcontrib-mermaid>=1.0.0",
+    "sphinxcontrib-youtube>=1.4.1",
+    "wheel>=0.45.1",
+]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version_provider = "pep621"
+tag_format = "v$version"
+version_files = ["pyproject.toml:^version =", "VERSION"]
+bump_message = "chore(release): bump version $current_version → $new_version [skip ci]"
+update_changelog_on_bump = true
+changelog_incremental = true
+pre_bump_hooks = ["uv sync", "git add uv.lock"]
+changelog_file = "CHANGELOG.md"
+changelog_title = "# Changelog \\n\\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),\nand this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\\n\\n## [Unreleased]\\n"
+changelog_message_template = """
+## {{version}} - {{date}}
+
+{{#each commits}}
+- {{message}}
+{{/each}}
+
+"""
+
+[tool.setuptools]
+py-modules = []
+
+
