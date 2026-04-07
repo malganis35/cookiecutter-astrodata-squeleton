@@ -20,6 +20,11 @@ def init_git():
     subprocess.run(['git', 'add', '.'], check=True)
     subprocess.run(['git', 'commit', '-m', 'initial commit'], check=True)
 
+def copy_env_file():
+    """Initialize the .env file."""
+    print("Copying .env file")
+    subprocess.run(['cp', '.env.example', '.env'], check=True)
+
 def remove_licence():
     """Remove the LICENSE file if the user opted out of open source licensing."""
     print("")
@@ -119,6 +124,7 @@ def main():
     remove_precommit()
     initiate_docs()
     init_git()
+    copy_env_file()
     ending_note()
 
 
