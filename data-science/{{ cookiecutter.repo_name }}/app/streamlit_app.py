@@ -9,6 +9,8 @@ from loguru import logger
 from pygwalker.api.streamlit import StreamlitRenderer
 from streamlit.runtime.uploaded_file_manager import UploadedFile
 
+from {{ cookiecutter.package_name }}.core.utils import get_project_version
+
 
 # --- PAGE CONFIGURATION ---
 def set_page_config() -> None:
@@ -67,6 +69,7 @@ def sidebar() -> UploadedFile | None:
         st.image(
             "https://img.freepik.com/vecteurs-libre/modele-logo-donnees-professionnelles_23-2149227039.jpg", width=150
         )
+        st.caption(f"v{get_project_version()}")
         st.markdown("---")
 
         st.subheader("📁 Data Settings")
