@@ -2,7 +2,7 @@
 
 Welcome to the team! This guide will take you from "I just cloned the repo" to "I generated my first project and ran it" in under 30 minutes, without any side-channel help.
 
-## 👋 1. What is cookiecutter-astrodata-squeleton?
+## 1. What is cookiecutter-astrodata-squeleton?
 
 The **AstroData Squeleton** is a **TEMPLATE GENERATOR**, not a project itself. Its purpose is to provide you with a professional, production-ready starting point for data science applications. Think of it as a "blueprint": you run the skeleton once to generate a new project folder (the "generated project"), and then you spend 100% of your time working inside that new folder.
 
@@ -12,7 +12,7 @@ This repository contains two independent templates:
 
 ---
 
-## 🛠️ 2. Prerequisites
+## 2. Prerequisites
 
 Before you start, you must have these tools installed on your computer.
 
@@ -24,7 +24,7 @@ Before you start, you must have these tools installed on your computer.
 
 ---
 
-## 🏗️ 3. Generating a new Data Science project (step by step)
+## 3. Generating a new Data Science project (step by step)
 
 Follow these 6 steps to create `my_project` from scratch:
 
@@ -76,7 +76,7 @@ $ make check
 
 ---
 
-## 📖 4. Generating a new Sphinx Documentation project
+## 4. Generating a new Sphinx Documentation project
 
 If you only need a standalone documentation site (without any Data Science code):
 
@@ -87,7 +87,7 @@ $ uv run --with cookiecutter cookiecutter git@github.com:malganis35/cookiecutter
 
 ---
 
-## 📂 5. Generated project structure — annotated
+## 5. Generated project structure — annotated
 
 Here is what your `my_project` folder structure looks like:
 
@@ -123,7 +123,7 @@ my_project/
 
 ---
 
-## 🎨 6. Core design decisions
+## 6. Core design decisions
 
 ### a. uv as the single dependency manager
 - **Rule**: No `pip`, no `conda`, no `virtualenv`.
@@ -157,7 +157,7 @@ my_project/
 
 ---
 
-## 🛠️ 7. Day-to-day workflows
+## 7. Day-to-day workflows
 
 ### 7.1 Clone and Setup
 ```bash
@@ -198,7 +198,7 @@ $ make check   # Runs linting, type checks, and tests
 
 ---
 
-## 📋 8. All Makefile commands — reference table
+## 8. All Makefile commands — reference table
 
 | Command | What it does | When to use it |
 | :--- | :--- | :--- |
@@ -211,7 +211,7 @@ $ make check   # Runs linting, type checks, and tests
 
 ---
 
-## 🔐 9. Environment variables reference
+## 9. Environment variables reference
 
 | Variable | Required? | Default | Description |
 | :--- | :--- | :--- | :--- |
@@ -221,7 +221,7 @@ $ make check   # Runs linting, type checks, and tests
 
 ---
 
-## ❓ 10. Troubleshooting / FAQ
+## 10. Troubleshooting / FAQ
 
 **Q1: Did the generation work?**
 A: Check if `my_project` exists. Move into it and run `ls -a`. If no error appeared at the end of the command, it worked.
@@ -240,7 +240,7 @@ A: These are ignored by Git. Use DVC or a shared bucket for large datasets.
 
 ---
 
-## 🤝 11. Contributing to the skeleton
+## 11. Contributing to the skeleton
 To improve the skeleton itself:
 - **Validate**: `$ make validate` (generates a test project).
 - **Digest**: `$ make digest` (creates context for LLMs).
