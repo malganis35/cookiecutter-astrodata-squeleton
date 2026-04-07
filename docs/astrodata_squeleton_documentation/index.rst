@@ -11,11 +11,10 @@ Welcome to the AstroData Squeleton Documentation
    :align: center
 
 .. toctree::
-   :maxdepth: 1
-   :caption: 🚀 Welcome Aboard
+   :maxdepth: 2
+   :caption: 🚀 Getting Started
 
-   docs/welcome/introduction.rst
-   docs/welcome/quickstart.rst
+   docs/welcome/onboarding.md
 
 .. toctree::
    :maxdepth: 1
