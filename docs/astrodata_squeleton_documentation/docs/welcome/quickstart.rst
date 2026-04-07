@@ -8,7 +8,6 @@ Ready to launch? This guide will take you from zero to a running project in minu
 
 Ensure you have the following installed:
 
-*   **Python 3.12+**
 *   **uv**: Installation guide: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 *   **Docker** (Optional, for production containers)
 
