@@ -1,34 +1,53 @@
-# Cookiecutter AstroData Squeleton
+# `cookiecutter-astrodata-squeleton`
 
-_A collection of logical, reasonably standardized, but flexible project structures for doing and sharing your work._
+> **A professional, opinionated collection of project templates for Data Science and Documentation.**
 
-This project is based on Cookiecutter Data Science : [Project homepage](http://drivendata.github.io/cookiecutter-data-science/)
+This repository provides a standardized, robust starting point for your work, ensuring best practices (linting, tests, containerization) from day one.
 
-## Requirements to use the cookiecutter template:
-- uv
+---
 
-## To start a new Data Science project, run:
+## 🚀 How to start a new project
 
-``` bash
+We use **`uv`** to run Cookiecutter without installing it globally. Choose the template that matches your needs:
+
+### 1. Data Science Project (The Core)
+Includes FastAPI, Streamlit, DVC, and structured `src/` folder.
+
+```bash
 uv run --with cookiecutter cookiecutter git@github.com:malganis35/cookiecutter-astrodata-squeleton.git --directory="data-science"
 ```
 
-Alternatively, you can add an alias to call this template in UNIX:
+### 2. Standalone Documentation
+Optimized project for Sphinx documentation only (no data science code).
 
-``` bash
-alias ds-make='uv run --with cookiecutter cookiecutter git@github.com:malganis35/cookiecutter-astrodata-squeleton.git --directory="data-science"'
-```
-
-## To start a new Sphinx documentation project, run:
-
-
-``` bash
+```bash
 uv run --with cookiecutter cookiecutter git@github.com:malganis35/cookiecutter-astrodata-squeleton.git --directory="sphinx-docs"
 ```
 
-Alternatively, you can add an alias to call this template in UNIX:
+---
 
-``` bash
+## 🛠️ Requirements
+
+- **[uv](https://github.com/astral-sh/uv)**: The ultra-fast Python project manager.
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+---
+
+## 📖 Full Documentation
+
+For more detailed guides on core design decisions, daily workflows, and troubleshooting, visit our **[Onboarding Portal](docs/astrodata_squeleton_documentation/index.rst)**.
+
+---
+
+## 💡 Quick Tips
+
+You can add aliases to your shell (`.bashrc` or `.zshrc`) for even faster generation:
+
+```bash
+alias ds-make='uv run --with cookiecutter cookiecutter git@github.com:malganis35/cookiecutter-astrodata-squeleton.git --directory="data-science"'
 alias docs-make='uv run --with cookiecutter cookiecutter git@github.com:malganis35/cookiecutter-astrodata-squeleton.git --directory="sphinx-docs"'
 ```
 

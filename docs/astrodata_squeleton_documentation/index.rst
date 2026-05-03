@@ -12,9 +12,14 @@ Welcome to the AstroData Squeleton Documentation
 
 .. toctree::
    :maxdepth: 2
-   :caption: 🚀 Getting Started
+   :caption: 🚀 Onboarding
 
-   docs/welcome/onboarding.md
+   docs/welcome/team_context.md
+   docs/welcome/installation.md
+   docs/welcome/architecture_rules.md
+   docs/welcome/daily_workflow.md
+   docs/welcome/infrastructure.md
+   docs/welcome/troubleshooting.md
 
 .. toctree::
    :maxdepth: 1
