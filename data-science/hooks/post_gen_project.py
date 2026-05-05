@@ -88,6 +88,17 @@ def generate_nested_project():
     finally:
         shutil.rmtree(temp_dir, ignore_errors=True)
     
+def remove_docs_ci():
+    """Remove documentation CI/CD files if the user opted out of Sphinx documentation."""
+    print("")
+    if "{{ cookiecutter.initialize_sphinx_documentation }}" == "no":
+        print("Remove documentation CI/CD files (Sphinx doc not requested)")
+        # GitHub Actions workflow for documentation
+        github_doc_workflow = Path(".github") / "workflows" / "documentation.yaml"
+        if github_doc_workflow.exists():
+            github_doc_workflow.unlink()
+            print(f"  ✓ Removed {github_doc_workflow}")
+
 def initiate_docs():
     """Determine whether to generate the nested Sphinx documentation based on user input."""
     print("")
@@ -122,6 +133,7 @@ def main():
     remove_licence()
     remove_precommit()
     initiate_docs()
+    remove_docs_ci()
     init_git()
     copy_env_file()
     ending_note()
