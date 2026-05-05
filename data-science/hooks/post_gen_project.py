@@ -91,9 +91,13 @@ def generate_nested_project():
     
     temp_dir = tempfile.mkdtemp()
     try:
+        # Use a -docs suffix to avoid uv workspace name conflicts with the
+        # root package (both pyproject.toml would otherwise share the same name).
+        # Underscores are replaced with hyphens to follow PEP 508 conventions.
+        docs_repo_name = "{{ cookiecutter.package_name }}".replace("_", "-") + "-docs"
         child_config = {
             'project_name': "{{ cookiecutter.project_name }} Documentation",
-            'repo_name': "{{ cookiecutter.package_name }}",
+            'repo_name': docs_repo_name,
             'author_name': "{{ cookiecutter.author_name }}",
             'author_email': "{{ cookiecutter.author_email }}",
             'description': "Project documentation",
