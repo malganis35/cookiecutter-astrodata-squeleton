@@ -1,6 +1,6 @@
 variables:
   UV_VERSION: "0.6"
-  PYTHON_VERSION: "{{ cookiecutter.python_version }}"
+  PYTHON_VERSION: "{{ cookiecutter.python_version.split('.')[:2] | join('.') }}"
   BASE_LAYER: bookworm-slim
   UV_LINK_MODE: copy # GitLab CI build dir requires copy mode
 
