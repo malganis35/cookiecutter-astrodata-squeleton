@@ -2,11 +2,12 @@ variables:
   UV_VERSION: "0.6"
   PYTHON_VERSION: "3.12"
   BASE_LAYER: bookworm-slim
-  UV_LINK_MODE: copy  # GitLab CI build dir requires copy mode
+  UV_LINK_MODE: copy # GitLab CI build dir requires copy mode
 
 .default_git_setup: &default_git_setup
   - apt-get update && apt-get install -y git
-  - git remote set-url origin "https://${CI_GIT_USERNAME}:${CI_GIT_TOKEN}@gitlab.com/${CI_PROJECT_PATH}.git"
+  - git remote set-url origin
+    "https://${CI_GIT_USERNAME}:${CI_GIT_TOKEN}@gitlab.com/${CI_PROJECT_PATH}.git"
   - git fetch origin
   - git fetch --tags --unshallow
   - git checkout -B "$CI_DEFAULT_BRANCH" "origin/$CI_DEFAULT_BRANCH"
@@ -16,7 +17,8 @@ variables:
 
 workflow:
   rules:
-    - if: ($CI_PIPELINE_SOURCE == 'merge_request_event' || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH )
+    - if: ($CI_PIPELINE_SOURCE == 'merge_request_event' || $CI_COMMIT_BRANCH ==
+        $CI_DEFAULT_BRANCH )
 
 stages:
   - build-devcontainer
@@ -31,13 +33,13 @@ python_lint:
   stage: check
   image: *default_image
   script:
-    - uv run --native-tls --group dev ruff check .
+    - uv run --native-tls --group dev ruff check src/ tests/ app/
 
 python_format:
   stage: check
   image: *default_image
   script:
-    - uv run --native-tls --group dev ruff format --check .
+    - uv run --native-tls --group dev ruff format src/ tests/ app/
 
 # Tests unitaires
 coverage:
@@ -53,7 +55,7 @@ coverage:
       - .venv/
   script:
     - uv run --native-tls --group dev pytest
-  coverage: '/(?i)total.*? (100(?:\.0+)?\%|[1-9]?\d(?:\.\d+)?\%)$/'
+  coverage: "/(?i)total.*? (100(?:\\.0+)?\\%|[1-9]?\\d(?:\\.\\d+)?\\%)$/"
   artifacts:
     when: always
     paths:
@@ -63,7 +65,6 @@ coverage:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
-
 
 # Test the retro-compatibility of the package again multiple python version
 pytest:
@@ -77,8 +78,7 @@ pytest:
     - uv run --native-tls --python ${VERSION} --group dev pytest
   parallel:
     matrix:
-      - VERSION: {{ cookiecutter.python_matrix }}
-
+      - VERSION: { ? { cookiecutter.python_matrix } }
 
 # Versioning + changelog (release)
 release:
@@ -96,11 +96,10 @@ release:
     - git push origin "$CI_DEFAULT_BRANCH"
     - git push --tags
   needs:
-    - 'python_format'
-    - 'python_lint'
+    - "python_format"
+    - "python_lint"
     - coverage
     - pytest
-
 
 # Build the Docker image (API) with OCI labels
 build-docker-api:
@@ -111,11 +110,7 @@ build-docker-api:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    - docker build \
-        --build-arg BUILD_VERSION=$(cat VERSION) \
-        --build-arg BUILD_REVISION=$CI_COMMIT_SHA \
-        --build-arg BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
-        --target api \
-        -t api:latest \
-        -f dockerfiles/Dockerfile .
-
+    - docker build \ --build-arg BUILD_VERSION=$(cat VERSION) \ --build-arg
+      BUILD_REVISION=$CI_COMMIT_SHA \ --build-arg BUILD_DATE=$(date -u
+      +%Y-%m-%dT%H:%M:%SZ) \ --target api \ -t api:latest \ -f
+      dockerfiles/Dockerfile .
