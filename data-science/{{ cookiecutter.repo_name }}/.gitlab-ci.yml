@@ -24,10 +24,10 @@ stages:
   - build-devcontainer
   - check
   - test
-  - release
-  - build-project
   - docs
   - deploy
+  - release
+  - build-project
 
 # Lint + Format
 python_lint:
@@ -136,7 +136,7 @@ build_docs:
       - public/
     expire_in: 1 day
 
-# Le job "pages" doit impérativement s'appeler "pages" pour activer GitLab Pages
+# The job "pages" must be called "pages" to activate GitLab Pages
 pages:
   stage: deploy
   image: alpine:latest

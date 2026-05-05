@@ -7,6 +7,7 @@ external sub-projects (like Sphinx documentation), setting up the Git
 repository, and printing a final informative message for the user.
 """
 
+import json
 import os
 from pathlib import Path
 import subprocess
@@ -24,6 +25,47 @@ def copy_env_file():
     """Initialize the .env file."""
     print("Copying .env file")
     subprocess.run(['cp', '.env.example', '.env'], check=True)
+
+# Mapping of human-readable color theme names to VSCode hex color codes
+VSCODE_COLOR_MAP = {
+    "Purple": "#4e29a7",
+    "Blue": "#1a4fa3",
+    "Teal": "#0d7377",
+    "Orange": "#b85c00",
+    "Red": "#a01c1c",
+}
+
+def apply_vscode_color_theme():
+    """Apply the chosen VSCode color theme to .vscode/settings.json.
+
+    Replaces the Cookiecutter placeholder with the actual hex value,
+    or removes the workbench.colorCustomizations block entirely when
+    the user selects 'Default (no color)'.
+    """
+    print("")
+    print("Apply VSCode color theme")
+    theme = "{{ cookiecutter.vscode_color_theme }}"
+    settings_path = Path(".vscode") / "settings.json"
+
+    if not settings_path.exists():
+        return
+
+    with settings_path.open("r", encoding="utf-8") as f:
+        settings = json.load(f)
+
+    if theme == "Default (no color)":
+        settings.pop("workbench.colorCustomizations", None)
+        print("  ✓ No color customization applied (Default)")
+    else:
+        hex_color = VSCODE_COLOR_MAP.get(theme, "#4e29a7")
+        color_block = settings.get("workbench.colorCustomizations", {})
+        for key in color_block:
+            color_block[key] = hex_color
+        settings["workbench.colorCustomizations"] = color_block
+        print(f"  ✓ VSCode color theme set to {theme} ({hex_color})")
+
+    with settings_path.open("w", encoding="utf-8") as f:
+        json.dump(settings, f, indent=4)
 
 def remove_licence():
     """Remove the LICENSE file if the user opted out of open source licensing."""
@@ -132,6 +174,7 @@ def main():
     """Run all post-generation hook tasks in order."""
     remove_licence()
     remove_precommit()
+    apply_vscode_color_theme()
     initiate_docs()
     remove_docs_ci()
     init_git()

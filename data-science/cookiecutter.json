@@ -19,5 +19,13 @@
     "initialize_sphinx_documentation": [
         "yes",
         "no"
+    ],
+    "vscode_color_theme": [
+        "Purple",
+        "Blue",
+        "Teal",
+        "Orange",
+        "Red",
+        "Default (no color)"
     ]
 }
