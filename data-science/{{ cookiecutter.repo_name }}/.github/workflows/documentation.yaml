@@ -1,0 +1,49 @@
+{% raw %}name: Documentation
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - "docs/project_documentation/**"
+      - ".github/workflows/documentation.yaml"
+  pull_request:
+    branches: [ main ]
+    paths:
+      - "docs/project_documentation/**"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-path: "uv.lock"
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "{% endraw %}{{ cookiecutter.python_version }}{% raw %}"
+
+      - name: Install dependencies
+        run: uv sync --frozen --group docs
+
+      - name: Build Sphinx documentation
+        run: uv run sphinx-build -b html docs/project_documentation/ _build/
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+        with:
+          publish_branch: gh-pages
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: _build/
+          force_orphan: true
+{% endraw %}
