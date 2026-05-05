@@ -57,7 +57,6 @@ def generate_nested_project():
             'description': "Project documentation",
             'open_source_license': "{{ cookiecutter.open_source_license }}",
             'sphinx_theme': "furo",
-            'python_interpreter': "{{ cookiecutter.python_interpreter }}"
         }
 
         cc(
