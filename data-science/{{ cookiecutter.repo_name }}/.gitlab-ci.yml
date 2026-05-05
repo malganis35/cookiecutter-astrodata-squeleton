@@ -3,6 +3,7 @@ variables:
   PYTHON_VERSION: "{{ cookiecutter.python_version.split('.')[:2] | join('.') }}"
   BASE_LAYER: bookworm-slim
   UV_LINK_MODE: copy # GitLab CI build dir requires copy mode
+  GIT_DEPTH: "0" # A depth of 0 tells Git to fetch all commits/tags
 
 .default_git_setup: &default_git_setup
   - apt-get update && apt-get install -y git
@@ -129,8 +130,9 @@ build_docs:
     - if: $CI_PIPELINE_SOURCE == "web"
   cache: *default_cache
   script:
-    - uv sync --frozen --group docs
-    - uv run sphinx-build -b html docs/project_documentation/ public/
+    - uv sync --frozen --no-install-project --project docs/project_documentation/
+    - uv run --project docs/project_documentation/ sphinx-build -b html
+      docs/project_documentation/ public/
   artifacts:
     paths:
       - public/
