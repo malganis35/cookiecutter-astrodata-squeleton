@@ -12,7 +12,9 @@
         "BSD-3-Clause"
     ],
     "python_version": "3.12.0",
-    "_python_matrix": "{{ [ (cookiecutter.python_version.split('.')[0] ~ '.' ~ (cookiecutter.python_version.split('.')[1]|int - 3)), (cookiecutter.python_version.split('.')[0] ~ '.' ~ (cookiecutter.python_version.split('.')[1]|int - 2)), (cookiecutter.python_version.split('.')[0] ~ '.' ~ (cookiecutter.python_version.split('.')[1]|int - 1)) ] }}",
+    "_py_major": "{{ cookiecutter.python_version.split('.')[0] }}",
+    "_py_minor": "{{ cookiecutter.python_version.split('.')[1]|int }}",
+    "_python_matrix": "[ '{{ cookiecutter._py_major }}.{{ cookiecutter._py_minor - 3 }}', '{{ cookiecutter._py_major }}.{{ cookiecutter._py_minor - 2 }}', '{{ cookiecutter._py_major }}.{{ cookiecutter._py_minor - 1 }}' ]",
     "install_precommit": [
         "yes",
         "no"
