@@ -55,17 +55,13 @@ jobs:
       - name: Mypy check
         run: uv run mypy --explicit-package-bases src/ app/
 
-{%- set _major = cookiecutter.python_version.split('.')[0] %}
-{%- set _minor = cookiecutter.python_version.split('.')[1]|int %}
   tests:
     needs: typecheck
     runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version:
-          - "{{ _major }}.{{ _minor - 3 }}"
-          - "{{ _major }}.{{ _minor - 2 }}"
-          - "{{ _major }}.{{ _minor - 1 }}"
+          - "{{ cookiecutter.python_version }}"
     steps:
       - uses: actions/checkout@v4
       
