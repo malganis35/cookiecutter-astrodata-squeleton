@@ -75,10 +75,15 @@ pytest:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   cache: *default_cache
   script:
+{%- set _major = cookiecutter.python_version.split('.')[0] %}
+{%- set _minor = cookiecutter.python_version.split('.')[1]|int %}
     - uv run --native-tls --python ${VERSION} --group dev pytest
   parallel:
     matrix:
-      - VERSION: {{ cookiecutter._python_matrix }}
+      - VERSION:
+          - "{{ _major }}.{{ _minor - 3 }}"
+          - "{{ _major }}.{{ _minor - 2 }}"
+          - "{{ _major }}.{{ _minor - 1 }}"
 
 # Versioning + changelog (release)
 release:
