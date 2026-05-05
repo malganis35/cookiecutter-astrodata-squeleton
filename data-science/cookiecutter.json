@@ -11,12 +11,8 @@
         "MIT",
         "BSD-3-Clause"
     ],
-    "python_interpreter": [
-        "python3",
-        "python"
-    ],
     "python_version": "3.12.0",
-    "python_matrix": ["3.10", "3.11", "3.12"],
+    "_python_matrix": "{{ [ (cookiecutter.python_version.split('.')[0] ~ '.' ~ (cookiecutter.python_version.split('.')[1]|int - 3)), (cookiecutter.python_version.split('.')[0] ~ '.' ~ (cookiecutter.python_version.split('.')[1]|int - 2)), (cookiecutter.python_version.split('.')[0] ~ '.' ~ (cookiecutter.python_version.split('.')[1]|int - 1)) ] }}",
     "install_precommit": [
         "yes",
         "no"

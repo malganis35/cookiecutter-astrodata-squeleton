@@ -78,7 +78,7 @@ pytest:
     - uv run --native-tls --python ${VERSION} --group dev pytest
   parallel:
     matrix:
-      - VERSION: { ? { cookiecutter.python_matrix } }
+      - VERSION: {{ cookiecutter._python_matrix }}
 
 # Versioning + changelog (release)
 release:
