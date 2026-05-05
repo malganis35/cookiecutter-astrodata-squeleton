@@ -129,6 +129,8 @@ build_docs:
         - .gitlab-ci.yml
     - if: $CI_PIPELINE_SOURCE == "web"
   cache: *default_cache
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends git
   script:
     - uv sync --frozen --no-install-project --project docs/project_documentation/
     - uv run --project docs/project_documentation/ sphinx-build -b html
@@ -145,9 +147,10 @@ pages:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   needs:
-    - build_docs
+    - job: build_docs
+      optional: true
   script:
-    - echo "📚 Documentation déployée sur GitLab Pages"
+    - echo "📚 Documentation is deployed on GitLab Pages"
   artifacts:
     paths:
       - public/

@@ -118,7 +118,7 @@ omit = ["**/__init__.py"]
 [tool.commitizen]
 name = "cz_conventional_commits"
 tag_format = "v$version"
-version_files = ["VERSION"]
+version_files = ["VERSION", "pyproject.toml:^version ="]
 bump_message = "chore(release): bump version $current_version → $new_version"
 update_changelog_on_bump = true
 changelog_incremental = true
