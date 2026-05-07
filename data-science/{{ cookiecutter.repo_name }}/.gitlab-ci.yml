@@ -27,7 +27,6 @@ workflow:
         $CI_DEFAULT_BRANCH )
 
 stages:
-  - build-devcontainer
   - check
   - test
   - docs
@@ -53,7 +52,7 @@ python_typecheck:
   stage: check
   image: *default_image
   script:
-    - uv run --native-tls --group dev mypy src/ tests/ app/
+    - uv run --native-tls --group dev mypy src/ app/
 
 commit_lint:
   stage: check
@@ -136,14 +135,14 @@ build-docker-api:
   variables:
     DOCKER_BUILDKIT: "1"
   stage: build-project
-  image: docker:latest
+  image: docker:27.3.1
   needs:
     - release
   environment:
     name: {{ cookiecutter.package_name }}-production
     url: https://my-app.com
   services:
-    - docker:dind
+    - docker:27.3.1-dind
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
@@ -168,14 +167,17 @@ build-docker-api:
       docker push $CI_REGISTRY_IMAGE/api:latest
 
 # ── Documentation (Sphinx → GitLab Pages) ──────────────────────────────────────
-build_docs:
-  stage: docs
+
+# The job "pages" must be called "pages" to activate GitLab Pages
+pages:
+  stage: deploy
   image: *default_image
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       changes:
         - docs/project_documentation/**/*
         - .gitlab-ci.yml
+        - VERSION
     - if: $CI_PIPELINE_SOURCE == "web"
   cache: *default_cache
   before_script:
@@ -187,28 +189,12 @@ build_docs:
   artifacts:
     paths:
       - public/
-    expire_in: 1 day
-
-# The job "pages" must be called "pages" to activate GitLab Pages
-pages:
-  stage: deploy
-  image: alpine:latest
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  needs:
-    - job: build_docs
-      optional: true
-  script:
-    - echo "📚 Documentation is deployed on GitLab Pages"
-  artifacts:
-    paths:
-      - public/
 
 # ── Trivy Image Scan Security ──────────────────────────────────────
 trivy-scan:
   stage: test
   image:
-    name: aquasec/trivy:latest
+    name: aquasec/trivy:0.55.2
     entrypoint: [""]
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
@@ -219,11 +205,42 @@ trivy-scan:
 trivy-docker:
   stage: security-scan
   image:
-    name: aquasec/trivy:latest
+    name: aquasec/trivy:0.55.2
     entrypoint: [""]
+  variables:
+    TRIVY_USERNAME: "$CI_REGISTRY_USER"
+    TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
+    TRIVY_AUTH_URL: "$CI_REGISTRY"
   needs:
     - build-docker-api
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
     - trivy image --exit-code 1 --severity CRITICAL $CI_REGISTRY_IMAGE/api:latest
+    - trivy image --format cyclonedx --output sbom-api.json $CI_REGISTRY_IMAGE/api:latest
+  artifacts:
+    paths:
+      - sbom-api.json
+    reports:
+      cyclonedx: sbom-api.json
+
+sign-docker-api:
+  stage: security-scan
+  image:
+    name: bitnami/cosign:2.4.1
+    entrypoint: [""]
+  needs:
+    - build-docker-api
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  id_tokens:
+    SIGSTORE_ID_TOKEN:
+      aud: sigstore
+  variables:
+    COSIGN_YES: "true"
+  script:
+    - |
+      echo -n "$CI_REGISTRY_PASSWORD" | cosign login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+      VERSION=$(cat VERSION)
+      cosign sign $CI_REGISTRY_IMAGE/api:$VERSION
+      cosign sign $CI_REGISTRY_IMAGE/api:latest
