@@ -112,6 +112,9 @@ release:
   stage: release
   image: *default_image
   rules:
+    - if: $CI_COMMIT_TITLE =~ /^bump:/
+      when: never
+    - if: ($CI_PIPELINE_SOURCE == 'merge_request_event' || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH)
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: on_success
     - when: never
@@ -152,11 +155,12 @@ build-docker-api:
       docker build \
         --cache-from $CI_REGISTRY_IMAGE/api:latest \
         --build-arg BUILDKIT_INLINE_CACHE=1 \
-        --build-arg BUILD_VERSION=$(cat VERSION) \
+        --build-arg BUILD_VERSION=$VERSION \
         --build-arg BUILD_REVISION=$CI_COMMIT_SHA \
         --build-arg BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
         --target api \
-        -t api:latest \
+        -t $CI_REGISTRY_IMAGE/api:$VERSION \
+        -t $CI_REGISTRY_IMAGE/api:latest \
         -f dockerfiles/Dockerfile \
         .
       
@@ -200,16 +204,26 @@ pages:
     paths:
       - public/
 
-# ── Documentation (Sphinx → GitLab Pages) ──────────────────────────────────────
+# ── Trivy Image Scan Security ──────────────────────────────────────
 trivy-scan:
-  stage: security-scan
-  image: aquasec/trivy:latest
-  when: manual
+  stage: test
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
     - trivy fs --exit-code 1 --severity HIGH,CRITICAL .
-    
+
 trivy-docker:
   stage: security-scan
-  when: manual
+  image:
+    name: aquasec/trivy:latest
+    entrypoint: [""]
+  needs:
+    - build-docker-api
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
     - trivy image --exit-code 1 --severity CRITICAL $CI_REGISTRY_IMAGE/api:latest
