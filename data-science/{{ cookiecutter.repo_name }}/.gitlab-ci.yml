@@ -5,12 +5,17 @@ variables:
   UV_LINK_MODE: copy # GitLab CI build dir requires copy mode
   GIT_DEPTH: "0" # A depth of 0 tells Git to fetch all commits/tags
 
+include:
+  - template: Security/SAST.gitlab-ci.yml
+  - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/Secret-Detection.gitlab-ci.yml
+
 .default_git_setup: &default_git_setup
   - apt-get update && apt-get install -y git
   - git remote set-url origin
     "https://${CI_GIT_USERNAME}:${CI_GIT_TOKEN}@gitlab.com/${CI_PROJECT_PATH}.git"
   - git fetch origin
-  - git fetch --tags --unshallow
+  - git fetch --tags
   - git checkout -B "$CI_DEFAULT_BRANCH" "origin/$CI_DEFAULT_BRANCH"
   - ls -al .git || echo "⚠️ Dossier .git non présent"
 
@@ -29,6 +34,7 @@ stages:
   - deploy
   - release
   - build-project
+  - security-scan
 
 # Lint + Format
 python_lint:
@@ -43,10 +49,28 @@ python_format:
   script:
     - uv run --native-tls --group dev ruff format src/ tests/ app/
 
+python_typecheck:
+  stage: check
+  image: *default_image
+  script:
+    - uv run --native-tls --group dev mypy src/ tests/ app/
+
+commit_lint:
+  stage: check
+  image: *default_image
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - uv run cz check --rev-range origin/$CI_DEFAULT_BRANCH..HEAD
+
 # Tests unitaires
 coverage:
   stage: test
   image: *default_image
+  timeout: 10 minutes
+  retry:
+    max: 2
+    when: runner_system_failure
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
@@ -106,15 +130,28 @@ release:
 
 # Build the Docker image (API) with OCI labels
 build-docker-api:
+  variables:
+    DOCKER_BUILDKIT: "1"
   stage: build-project
   image: docker:latest
+  needs:
+    - release
+  environment:
+    name: {{ cookiecutter.package_name }}-production
+    url: https://my-app.com
   services:
     - docker:dind
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
     - |
+      docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+
+      VERSION=$(cat VERSION)
+
       docker build \
+        --cache-from $CI_REGISTRY_IMAGE/api:latest \
+        --build-arg BUILDKIT_INLINE_CACHE=1 \
         --build-arg BUILD_VERSION=$(cat VERSION) \
         --build-arg BUILD_REVISION=$CI_COMMIT_SHA \
         --build-arg BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ) \
@@ -122,6 +159,9 @@ build-docker-api:
         -t api:latest \
         -f dockerfiles/Dockerfile \
         .
+      
+      docker push $CI_REGISTRY_IMAGE/api:$VERSION
+      docker push $CI_REGISTRY_IMAGE/api:latest
 
 # ── Documentation (Sphinx → GitLab Pages) ──────────────────────────────────────
 build_docs:
@@ -159,3 +199,17 @@ pages:
   artifacts:
     paths:
       - public/
+
+# ── Documentation (Sphinx → GitLab Pages) ──────────────────────────────────────
+trivy-scan:
+  stage: security-scan
+  image: aquasec/trivy:latest
+  when: manual
+  script:
+    - trivy fs --exit-code 1 --severity HIGH,CRITICAL .
+    
+trivy-docker:
+  stage: security-scan
+  when: manual
+  script:
+    - trivy image --exit-code 1 --severity CRITICAL $CI_REGISTRY_IMAGE/api:latest
