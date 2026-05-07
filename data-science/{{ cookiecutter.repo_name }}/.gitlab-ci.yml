@@ -137,7 +137,7 @@ build_docs:
   before_script:
     - apt-get update && apt-get install -y --no-install-recommends git
   script:
-    - uv sync --frozen --no-install-project --project docs/project_documentation/
+    - uv sync --no-install-project --project docs/project_documentation/
     - uv run --project docs/project_documentation/ sphinx-build -b html
       docs/project_documentation/ public/
   artifacts:
