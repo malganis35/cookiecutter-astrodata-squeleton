@@ -104,6 +104,7 @@ addopts = [
     "--cov-report=term-missing",
     "--cov-report=xml:coverage.xml",
     "--cov-fail-under=80",
+        "--junitxml=report.xml",
 ]
 
 [tool.coverage.report]
@@ -117,6 +118,7 @@ omit = ["**/__init__.py"]
 
 [tool.commitizen]
 name = "cz_conventional_commits"
+version = "0.1.0"
 tag_format = "v$version"
 version_files = ["VERSION", "pyproject.toml:^version ="]
 bump_message = "chore(release): bump version $current_version → $new_version"
