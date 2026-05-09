@@ -19,7 +19,7 @@ def init_git():
     subprocess.run(['git', 'init', '--initial-branch=main'], check=True)
     subprocess.run(['uv', 'sync'], check=True)
     subprocess.run(['git', 'add', '.'], check=True)
-    subprocess.run(['git', 'commit', '-m', 'initial commit'], check=True)
+    subprocess.run(['git', 'commit', '-m', 'feat: initial commit'], check=True)
 
 def copy_env_file():
     """Initialize the .env file."""
