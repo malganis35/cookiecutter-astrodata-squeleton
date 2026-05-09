@@ -75,6 +75,42 @@ Maintain high code standards using the following commands:
 - **Run tests only**: `make test`
 - **Stop on first test failure**: `make test-fast`
 
+## 🚀 CI/CD Configuration
+
+This project is pre-configured with a powerful GitLab CI/CD pipeline that handles testing, security scanning, and automated releases.
+
+### Setting up Automated Releases
+
+To allow the pipeline to automatically bump versions and push tags back to the repository (the `release` job), you must configure two environment variables in GitLab:
+
+1. **`CI_GIT_USERNAME`**: The username that will appear in the automated commits.
+2. **`CI_GIT_TOKEN`**: A secure token that gives the pipeline permission to push to your repository.
+
+#### Step 1: Create a Project Access Token
+1. In your GitLab project, go to **Settings > Access Tokens**.
+2. Click **Add new token**.
+3. **Name**: `GitLab CI Release Token` (or similar).
+4. **Role**: Select **Maintainer** (required to push to protected branches).
+5. **Scopes**: Select **`api`** and **`write_repository`**.
+6. Click **Create project access token**.
+7. **Important**: Copy the token immediately; you will not be able to see it again!
+
+#### Step 2: Add the Variables to CI/CD
+1. Go to **Settings > CI/CD** in your GitLab project.
+2. Expand the **Variables** section.
+3. Click **Add variable** for the username:
+   - **Key**: `CI_GIT_USERNAME`
+   - **Value**: `project_{project_id}_bot` (You can find the exact name in the Access Tokens page under "Active project access tokens") or simply your GitLab username.
+   - **Type**: Variable
+4. Click **Add variable** again for the token:
+   - **Key**: `CI_GIT_TOKEN`
+   - **Value**: `[Paste the token you copied in Step 1]`
+   - **Type**: Variable
+   - **Mask variable**: Checked (to hide it in logs).
+   - **Protect variable**: Checked (if your `main` branch is protected).
+
+Once configured, the `release` job will automatically trigger on every merge to the main branch, creating a new version, updating the changelog, and pushing a git tag.
+
 ## 📁 Project Structure
 
 ```text
