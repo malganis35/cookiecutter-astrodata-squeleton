@@ -122,7 +122,7 @@ name = "cz_conventional_commits"
 version = "0.1.0"
 tag_format = "v$version"
 version_files = ["VERSION", "pyproject.toml:^version ="]
-bump_message = "chore(release): bump version $current_version → $new_version [skip ci]"
+bump_message = "chore(release): bump version $current_version → $new_version"
 update_changelog_on_bump = true
 changelog_incremental = true
 pre_bump_hooks = ["uv sync", "git add uv.lock"]
