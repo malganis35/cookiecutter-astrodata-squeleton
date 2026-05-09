@@ -2,8 +2,8 @@
 FROM python:{{ cookiecutter.python_version }}-slim AS base
 
 # Install uv and system dependencies
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
-RUN apt-get update && apt-get install -y --no-install-recommends \
+COPY --from=ghcr.io/astral-sh/uv:0.6 /uv /uvx /bin/
+RUN apt-get update && apt-get upgrade -y --no-install-recommends \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
