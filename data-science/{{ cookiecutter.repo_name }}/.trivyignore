@@ -1,0 +1,30 @@
+# .trivyignore
+# ── Toutes les CVE ci-dessous ont le statut "affected" dans Debian 12
+# ── Aucun fix disponible — à réévaluer à chaque mise à jour de l'image
+
+# libcap2 — TOCTOU race condition (privilege escalation)
+CVE-2026-4878
+
+# libexpat1 — integer overflow (information disclosure)
+CVE-2026-25210
+
+# libgcrypt20 — DoS via crafted ECDH ciphertext
+CVE-2026-41989
+
+# libldap — null pointer dereference
+CVE-2023-2953
+
+# ncurses (libncursesw6, libtinfo6, ncurses-base, ncurses-bin) — buffer overflow
+CVE-2025-69720
+
+# libnghttp2 — DoS via malformed HTTP/2 frames
+CVE-2026-27135
+
+# libsqlite3 — integer overflow (CRITICAL)
+CVE-2025-7458
+
+# libssh2 — security vulnerability up to 1.11.1
+CVE-2026-7598
+
+# systemd (libsystemd0, libudev1) — arbitrary code execution via IPC
+CVE-2026-29111
