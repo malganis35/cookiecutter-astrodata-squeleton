@@ -23,7 +23,8 @@ dependencies = [
     "openpyxl>=3.1.5",
     "pandas>=2.3.2",
     "pandoc>=2.4",
-    "setuptools>=80.9.0",
+    "pillow>=12.2.0",
+    "setuptools>=78.1.1",
     "sphinx>=8.2.3",
     "sphinx-autobuild>=2025.8.25",
     "sphinx-book-theme>=1.1.4",
@@ -38,7 +39,7 @@ dependencies = [
     "sphinxcontrib-googleanalytics==0.4",
     "sphinxcontrib-mermaid>=1.0.0",
     "sphinxcontrib-youtube>=1.4.1",
-    "wheel>=0.45.1",
+    "wheel>=0.46.2",
 ]
 
 [tool.commitizen]
