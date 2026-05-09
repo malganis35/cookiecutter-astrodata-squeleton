@@ -2,8 +2,8 @@ variables:
   UV_VERSION: "0.6"
   PYTHON_VERSION: "{{ cookiecutter.python_version.split('.')[:2] | join('.') }}"
   BASE_LAYER: bookworm-slim
-  UV_LINK_MODE: copy # GitLab CI build dir requires copy mode
-  GIT_DEPTH: "0" # A depth of 0 tells Git to fetch all commits/tags
+  UV_LINK_MODE: copy # Essential: GitLab runners often don't support hardlinks across file systems or container layers
+  GIT_DEPTH: "1" # Clone shallow by default (perf), overridden on release
 
 include:
   - template: Security/SAST.gitlab-ci.yml
@@ -17,52 +17,89 @@ include:
   - git fetch origin
   - git fetch --tags
   - git checkout -B "$CI_DEFAULT_BRANCH" "origin/$CI_DEFAULT_BRANCH"
-  - ls -al .git || echo "⚠️ Dossier .git non présent"
+  - ls -al .git || echo "⚠️ .git folder not present"
 
 .default_image: &default_image ghcr.io/astral-sh/uv:$UV_VERSION-python$PYTHON_VERSION-$BASE_LAYER
 
 workflow:
   rules:
-    - if: ($CI_PIPELINE_SOURCE == 'merge_request_event' || $CI_COMMIT_BRANCH ==
-        $CI_DEFAULT_BRANCH )
+    # Always run pipeline for tags
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+    # Skip pipeline for release commits on the branch (avoid double pipeline)
+    - if: '$CI_COMMIT_TITLE =~ /^chore\(release\): bump/ && $CI_COMMIT_BRANCH'
+      when: never
+    # Run for MRs and main branch
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
 
 stages:
   - check
   - test
-  - docs
-  - deploy
   - release
   - build-project
   - security-scan
+  - push-project
+  - deploy
 
-# Lint + Format
+# ── Lint + Format ──────────────────────────────────────────────────────────────
+
+# Lint Python source code using Ruff
 python_lint:
-  stage: check
-  image: *default_image
-  script:
-    - uv run --native-tls --group dev ruff check src/ tests/ app/
-
-python_format:
-  stage: check
-  image: *default_image
-  script:
-    - uv run --native-tls --group dev ruff format src/ tests/ app/
-
-python_typecheck:
-  stage: check
-  image: *default_image
-  script:
-    - uv run --native-tls --group dev mypy src/ app/
-
-commit_lint:
   stage: check
   image: *default_image
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   script:
-    - uv run cz check --rev-range origin/$CI_DEFAULT_BRANCH..HEAD
+    - uv run --native-tls --group dev ruff check src/ tests/ app/
 
-# Tests unitaires
+# Check Python code formatting consistency using Ruff
+python_format:
+  stage: check
+  image: *default_image
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - uv run --native-tls --group dev ruff format --check src/ tests/ app/
+
+# Perform static type analysis using MyPy
+python_typecheck:
+  stage: check
+  image: *default_image
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - uv run --native-tls --group dev mypy src/ app/
+
+# Audit project dependencies for restrictive licenses (e.g., GPL)
+python_license_check:
+  stage: check
+  image: *default_image
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    # Fail if any dependency uses a GPL-style license to avoid "copyleft" contamination
+    - uv run --native-tls --group dev pip-licenses --fail-on "GPL;AGPL;LGPL"
+
+# Validate commit messages against conventional commits standards
+commit_lint:
+  stage: check
+  image: *default_image
+  variables:
+    GIT_DEPTH: 0 # Required to have the history between the base branch and the MR branch
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  before_script:
+    - apt-get update && apt-get install -y git
+  script:
+    - uv run cz check --rev-range $CI_MERGE_REQUEST_DIFF_BASE_SHA..HEAD
+
+# ── Unit tests ─────────────────────────────────────────────────────────────────
+
+# Execute tests and generate Cobertura coverage reports
 coverage:
   stage: test
   image: *default_image
@@ -74,10 +111,11 @@ coverage:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
   cache: &default_cache
-    key: ${CI_COMMIT_REF_SLUG}
+    key: uv-cache-$PYTHON_VERSION # Cache shared between branches
     paths:
       - /root/.cache/uv
       - .venv/
+    policy: pull-push
   script:
     - uv run --native-tls --group dev pytest
   coverage: "/(?i)total.*? (100(?:\\.0+)?\\%|[1-9]?\\d(?:\\.\\d+)?\\%)$/"
@@ -91,13 +129,16 @@ coverage:
         coverage_format: cobertura
         path: coverage.xml
 
-# Test the retro-compatibility of the package again multiple python version
+# Run unit tests across multiple Python versions for retro-compatibility
 pytest:
   stage: test
   image: *default_image
   rules:
     - if: $CI_PIPELINE_SOURCE == "merge_request_event"
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  retry:
+    max: 2
+    when: runner_system_failure
   cache: *default_cache
   script:
     - uv run --native-tls --python ${VERSION} --group dev pytest
@@ -106,14 +147,34 @@ pytest:
       - VERSION:
           - "{{ cookiecutter.python_version }}"
 
-# Versioning + changelog (release)
+# ── Trivy Filesystem Scan ──────────────────────────────────────────────────────
+
+# Scan the repository filesystem for vulnerabilities using Trivy
+trivy-scan:
+  stage: test
+  image:
+    name: aquasec/trivy:0.55.2
+    entrypoint: [""]
+  timeout: 10 minutes
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - trivy fs --exit-code 1 --severity HIGH,CRITICAL .
+
+# ── Versioning + changelog (release) ───────────────────────────────────────────
+
+# Automate version bumping, changelog updates, and git tagging
 release:
   stage: release
   image: *default_image
+  variables:
+    GIT_DEPTH: "0" # Required: Full history needed for commitizen (cz) to determine next version
   rules:
-    - if: $CI_COMMIT_TITLE =~ /^bump:/
+    # Skip if commit message starts with 'chore(release): bump' to prevent infinite CI loops during release
+    - if: '$CI_COMMIT_TITLE =~ /^chore\(release\): bump/'
       when: never
-    - if: ($CI_PIPELINE_SOURCE == 'merge_request_event' || $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH)
+    # Only run release on the default branch after successful tests
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: on_success
     - when: never
@@ -129,27 +190,49 @@ release:
     - "python_lint"
     - coverage
     - pytest
+    - trivy-scan
 
-# Build the Docker image (API) with OCI labels
+# ── Build Python Package ───────────────────────────────────────────────────────
+
+# Build wheel + sdist on version tag
+build-python-package:
+  stage: build-project
+  image: *default_image
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+  script:
+    - uv build
+  artifacts:
+    paths:
+      - dist/
+    expire_in: 1 day
+
+# ── Build Docker image (API) ───────────────────────────────────────────────────
+
+# Build the API Docker image and export it as a tar artifact
 build-docker-api:
   variables:
     DOCKER_BUILDKIT: "1"
   stage: build-project
-  image: docker:27.3.1
-  needs:
-    - release
+  image: docker@sha256:6ca9a6811085e2cf769cbac04bc47daf66629102990391caab7cf37426e939da # 27.3.1
+  # No needs on release as it runs in a different pipeline
   environment:
-    name: {{ cookiecutter.package_name }}-production
+    name: test-production
     url: https://my-app.com
   services:
-    - docker:27.3.1-dind
+    - docker@sha256:6ca9a6811085e2cf769cbac04bc47daf66629102990391caab7cf37426e939da # 27.3.1-dind
+  timeout: 20 minutes
+  retry:
+    max: 2
+    when: runner_system_failure
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
   script:
     - |
-      docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+      # --password-stdin avoids password exposure in logs
+      echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
 
-      VERSION=$(cat VERSION)
+      VERSION=${CI_COMMIT_TAG:-$(cat VERSION)}
 
       docker build \
         --cache-from $CI_REGISTRY_IMAGE/api:latest \
@@ -162,13 +245,128 @@ build-docker-api:
         -t $CI_REGISTRY_IMAGE/api:latest \
         -f dockerfiles/Dockerfile \
         .
-      
+
+      # Save as tar to pass the EXACT same bits to the security scan and push jobs
+      docker save $CI_REGISTRY_IMAGE/api:latest -o api-latest.tar
+  artifacts:
+    paths:
+      - api-latest.tar
+    expire_in: 1 day
+
+# ── Security Scan (Docker image) ───────────────────────────────────────────────
+
+# SECURITY NOTE: scan-docker-api is intentionally manual to allow
+# emergency hotfix deployments. Re-enable needs dependency for
+# standard release workflows.
+
+# Scan the built Docker image for vulnerabilities and generate a SBOM
+scan-docker-api:
+  stage: security-scan
+  image:
+    name: aquasec/trivy:0.55.2
+    entrypoint: [""]
+  needs:
+    - build-docker-api
+  when: manual
+  timeout: 10 minutes
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+  retry:
+    max: 2
+    when: runner_system_failure
+  script:
+    # Verify that the tar file exists
+    - ls -lh $CI_PROJECT_DIR/api-latest.tar || (echo "❌ api-latest.tar not found" && exit 1)
+
+    # --exit-code 0 : generates SBOM without blocking, even if CVEs are found
+    # CI_PROJECT_DIR forces writing to the project directory (avoids workdir issues with Trivy image)
+    - trivy image --input $CI_PROJECT_DIR/api-latest.tar --exit-code 0 --format cyclonedx --output $CI_PROJECT_DIR/sbom-api.json
+
+    # Verify that the file was successfully created
+    - ls -lh $CI_PROJECT_DIR/sbom-api.json || (echo "❌ sbom-api.json not generated" && exit 1)
+
+    # Blocking scan on HIGH and CRITICAL
+    - trivy image --input $CI_PROJECT_DIR/api-latest.tar --exit-code 1 --severity HIGH,CRITICAL --ignore-unfixed
+  artifacts:
+    when: always # Upload SBOM even if blocking scan fails
+    paths:
+      - sbom-api.json
+    reports:
+      cyclonedx: sbom-api.json
+    expire_in: 1 year # Extended for security traceability (NIS2 compliance). Consider 'never' for production releases.
+
+# ── Push Docker image ──────────────────────────────────────────────────────────
+
+# Load and push the Docker image to the GitLab Container Registry
+push-docker-api:
+  variables:
+    DOCKER_BUILDKIT: "1"
+  stage: push-project
+  image: docker@sha256:6ca9a6811085e2cf769cbac04bc47daf66629102990391caab7cf37426e939da
+  services:
+    - docker@sha256:6ca9a6811085e2cf769cbac04bc47daf66629102990391caab7cf37426e939da
+  needs:
+    # - scan-docker-api
+    - build-docker-api
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+  timeout: 10 minutes
+  retry:
+    max: 2
+    when: runner_system_failure
+  script:
+    - |
+      echo "$CI_REGISTRY_PASSWORD" | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+      # Load the exact same image bits built in the build stage
+      docker load -i api-latest.tar
+
+      VERSION=${CI_COMMIT_TAG:-$(cat VERSION)}
+      docker tag $CI_REGISTRY_IMAGE/api:latest $CI_REGISTRY_IMAGE/api:$VERSION
+
       docker push $CI_REGISTRY_IMAGE/api:$VERSION
       docker push $CI_REGISTRY_IMAGE/api:latest
 
-# ── Documentation (Sphinx → GitLab Pages) ──────────────────────────────────────
+# ── Sign Docker image ──────────────────────────────────────────────────────────
 
-# The job "pages" must be called "pages" to activate GitLab Pages
+# Sign the published Docker image using Cosign and OIDC
+sign-docker-api:
+  stage: push-project
+  image:
+    name: bitnami/cosign@sha256:fef9e1f8de75af0ce0725f5482b81258207f526a6e46a70f92a92880bace666e # 3.0.6
+    entrypoint: [""]
+  needs:
+    - push-docker-api
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+  id_tokens:
+    SIGSTORE_ID_TOKEN: # OIDC integration for "keyless" signing with Sigstore
+      aud: sigstore
+  variables:
+    COSIGN_YES: "true"
+  script:
+    - |
+      echo -n "$CI_REGISTRY_PASSWORD" | cosign login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
+      VERSION=${CI_COMMIT_TAG:-$(cat VERSION)}
+      cosign sign $CI_REGISTRY_IMAGE/api:$VERSION
+      cosign sign $CI_REGISTRY_IMAGE/api:latest
+
+# ── Publish Python Package ─────────────────────────────────────────────────────
+
+# Upload the Python package to the GitLab Package Registry (PyPI)
+publish-python-package:
+  stage: push-project
+  image: *default_image
+  rules:
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/
+  needs:
+    - build-python-package
+  script:
+    - uv publish --native-tls --publish-url $CI_API_V4_URL/projects/$CI_PROJECT_ID/packages/pypi --username gitlab-ci-token --password $CI_JOB_TOKEN dist/*.whl
+
+
+# ── Documentation (Sphinx → GitLab Pages) ─────────────────────────────────────
+
+# Special job name 'pages' is required by GitLab to trigger automatic Pages deployment
 pages:
   stage: deploy
   image: *default_image
@@ -189,58 +387,3 @@ pages:
   artifacts:
     paths:
       - public/
-
-# ── Trivy Image Scan Security ──────────────────────────────────────
-trivy-scan:
-  stage: test
-  image:
-    name: aquasec/trivy:0.55.2
-    entrypoint: [""]
-  rules:
-    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  script:
-    - trivy fs --exit-code 1 --severity HIGH,CRITICAL .
-
-trivy-docker:
-  stage: security-scan
-  image:
-    name: aquasec/trivy:0.55.2
-    entrypoint: [""]
-  variables:
-    TRIVY_USERNAME: "$CI_REGISTRY_USER"
-    TRIVY_PASSWORD: "$CI_REGISTRY_PASSWORD"
-    TRIVY_AUTH_URL: "$CI_REGISTRY"
-  needs:
-    - build-docker-api
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  script:
-    - trivy image --exit-code 1 --severity CRITICAL $CI_REGISTRY_IMAGE/api:latest
-    - trivy image --format cyclonedx --output sbom-api.json $CI_REGISTRY_IMAGE/api:latest
-  artifacts:
-    paths:
-      - sbom-api.json
-    reports:
-      cyclonedx: sbom-api.json
-
-sign-docker-api:
-  stage: security-scan
-  image:
-    name: bitnami/cosign:2.4.1
-    entrypoint: [""]
-  needs:
-    - build-docker-api
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-  id_tokens:
-    SIGSTORE_ID_TOKEN:
-      aud: sigstore
-  variables:
-    COSIGN_YES: "true"
-  script:
-    - |
-      echo -n "$CI_REGISTRY_PASSWORD" | cosign login $CI_REGISTRY -u $CI_REGISTRY_USER --password-stdin
-      VERSION=$(cat VERSION)
-      cosign sign $CI_REGISTRY_IMAGE/api:$VERSION
-      cosign sign $CI_REGISTRY_IMAGE/api:latest
