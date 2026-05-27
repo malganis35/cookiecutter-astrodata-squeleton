@@ -1,4 +1,4 @@
-# `cookiecutter-astrodata-squeleton`
+# Astrodata Squeleton (Cookiecutter)
 
 > **A professional, opinionated collection of project templates for Data Science and Documentation.**
 
