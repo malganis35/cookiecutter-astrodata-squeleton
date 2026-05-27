@@ -1,3 +1,46 @@
+## v0.3.0 (2026-05-27)
+
+### Feat
+
+- implement post-generation dependency installation and cleanup using uv
+- add CI/CD configuration section to README for automated releases
+- add pip-licences to depedency-groups packages
+- **trivy**: add .trivyignore file to manage CVEs for Debian 12
+- **ci**: enhance GitLab CI configuration with improved rules, added security scans, and refined job stages
+- **ci**: update GitLab CI configuration to enhance release rules and improve Trivy scan integration
+- **ci**: enhance GitLab CI configuration with security scans and type checking
+- add customizable VSCode color themes and reorder CI pipeline stages
+- remove documentation CI/CD files when Sphinx is disabled
+- add automated Sphinx documentation workflows for both GitHub Actions and GitLab CI/CD
+- initialize astrodata documentation skeleton with Sphinx configuration, GitLab templates, and CI/CD workflows
+- implement centralized project versioning utility and display version in Streamlit app
+- add OCI build labels and dynamic build arguments to Docker configuration
+- add function to copy .env file during project initialization
+
+### Fix
+
+- **commitizen**: remove [skip ci] from bump_message in pyproject.toml for data-science
+- **init_git**: update initial commit message to follow convention
+- **commitizen**: remove [skip ci] from bump_message in pyproject.toml
+- **dependencies**: update setuptools and wheel versions in pyproject.toml
+- **docker**: update uv version in Dockerfile and optimize package installation
+- **ci**: streamline CI pipeline by removing unnecessary build-devcontainer stage and updating Docker images
+- **commitizen**: add [skip ci] to bump message for versioning
+- add JUnit XML report option to pytest and set version for commitizen
+- **docs**: remove unnecessary --frozen flag from uv sync command in build_docs stage
+- **ci**: install git in documentation runner and update pages deployment script
+- append -docs suffix to sphinx project repo name to prevent uv workspace conflicts
+- set GIT_DEPTH to 0 and update documentation build commands to use project-specific uv environments
+
+### Refactor
+
+- improve readability of docker build command in GitLab CI configuration
+- simplify CI matrix configurations to use the configured cookiecutter python version directly
+- inline python version matrix generation into CI workflow templates
+- decompose python version logic into separate major and minor variables in cookiecutter.json
+- remove python_interpreter field and dynamically generate python_matrix based on python_version
+- update st.dataframe width parameter to use_container_width in Streamlit app
+
 ## v0.2.0 (2026-04-03)
 
 ### Feat
