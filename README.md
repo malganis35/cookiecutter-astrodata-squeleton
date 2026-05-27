@@ -14,14 +14,14 @@ We use **`uv`** to run Cookiecutter without installing it globally. Choose the t
 Includes FastAPI, Streamlit, DVC, and structured `src/` folder.
 
 ```bash
-uv run --with cookiecutter cookiecutter git@github.com:malganis35/cookiecutter-astrodata-squeleton.git --directory="data-science"
+uv run --with cookiecutter cookiecutter https://github.com/malganis35/cookiecutter-astrodata-squeleton.git --directory="data-science"
 ```
 
 ### 2. Standalone Documentation
 Optimized project for Sphinx documentation only (no data science code).
 
 ```bash
-uv run --with cookiecutter cookiecutter git@github.com:malganis35/cookiecutter-astrodata-squeleton.git --directory="sphinx-docs"
+uv run --with cookiecutter cookiecutter https://github.com/malganis35/cookiecutter-astrodata-squeleton.git --directory="sphinx-docs"
 ```
 
 ---
@@ -47,7 +47,7 @@ For more detailed guides on core design decisions, daily workflows, and troubles
 You can add aliases to your shell (`.bashrc` or `.zshrc`) for even faster generation:
 
 ```bash
-alias ds-make='uv run --with cookiecutter cookiecutter git@github.com:malganis35/cookiecutter-astrodata-squeleton.git --directory="data-science"'
-alias docs-make='uv run --with cookiecutter cookiecutter git@github.com:malganis35/cookiecutter-astrodata-squeleton.git --directory="sphinx-docs"'
+alias ds-make='uv run --with cookiecutter cookiecutter https://github.com/malganis35/cookiecutter-astrodata-squeleton.git --directory="data-science"'
+alias docs-make='uv run --with cookiecutter cookiecutter https://github.com/malganis35/cookiecutter-astrodata-squeleton.git --directory="sphinx-docs"'
 ```
 
