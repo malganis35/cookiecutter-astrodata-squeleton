@@ -17,34 +17,10 @@ classifiers = [
 ]
 requires-python = ">={{ cookiecutter.python_version }}"
 
-dependencies = [
-    "loguru>=0.7.3",
-    "pretty-errors>=1.2.25",
-    "python-dotenv>=1.1.1",
-    "streamlit==1.42.0",
-    "fastapi>=0.111",
-    "uvicorn>=0.30",
-    "pygwalker>=0.4.9",
-    "openpyxl>=3.1.5",
-    "pydantic>=2.7.0",
-    "pydantic-settings>=2.2.0",
-    "pandas>=2.2.0",
-    "matplotlib>=3.8.0",
-    "ipykernel>=6.29.0",
-]
+dependencies = []
 
 [dependency-groups]
-dev = [
-    "pytest>=8.0.0",
-    "pytest-cov>=4.1.0",
-    "pytest-mock>=3.14.0",
-    "ruff>=0.3.0",
-    "mypy>=1.9.0",
-    "pre-commit>=3.6.0",
-    "gitingest>=0.1.5",
-    "commitizen>=4.8.3",
-    "pip-licenses>=5.0.0",
-]
+dev = []
 
 [project.scripts]
 {{ cookiecutter.package_name }}-app = "app.streamlit_app:main"

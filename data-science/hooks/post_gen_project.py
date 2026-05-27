@@ -13,6 +13,37 @@ from pathlib import Path
 import subprocess
 from cookiecutter.main import cookiecutter as cc
 
+def install_dependencies():
+    """Install dependencies from temporary requirements files using uv, then delete them."""
+    req_file = Path("requirements.txt")
+    req_dev_file = Path("requirements-dev.txt")
+
+    # Helper to parse requirement files safely
+    def parse_requirements(path: Path):
+        if not path.exists():
+            return []
+        with path.open("r", encoding="utf-8") as f:
+            lines = [line.strip() for line in f]
+        # filter out empty lines and comments
+        return [line for line in lines if line and not line.startswith("#")]
+
+    prod_deps = parse_requirements(req_file)
+    dev_deps = parse_requirements(req_dev_file)
+
+    if prod_deps:
+        print(f"\nInstalling production dependencies from requirements.txt: {', '.join(prod_deps)}")
+        subprocess.run(['uv', 'add'] + prod_deps, check=True)
+        # Remove requirements.txt so it doesn't pollute the project
+        req_file.unlink()
+        print("  ✓ Removed requirements.txt")
+
+    if dev_deps:
+        print(f"\nInstalling development dependencies from requirements-dev.txt: {', '.join(dev_deps)}")
+        subprocess.run(['uv', 'add', '--dev'] + dev_deps, check=True)
+        # Remove requirements-dev.txt
+        req_dev_file.unlink()
+        print("  ✓ Removed requirements-dev.txt")
+
 def init_git():
     """Initialize a git repository in the generated project and make the first commit."""
     print("Init the git repo")
@@ -181,6 +212,7 @@ def main():
     apply_vscode_color_theme()
     initiate_docs()
     remove_docs_ci()
+    install_dependencies()
     init_git()
     copy_env_file()
     ending_note()

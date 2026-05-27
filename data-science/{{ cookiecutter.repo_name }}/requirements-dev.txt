@@ -1,0 +1,9 @@
+pytest
+pytest-cov
+pytest-mock
+ruff
+mypy
+pre-commit
+gitingest
+commitizen
+pip-licenses
