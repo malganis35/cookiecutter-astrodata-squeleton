@@ -24,6 +24,14 @@ Optimized project for Sphinx documentation only (no data science code).
 uv run --with cookiecutter cookiecutter https://github.com/malganis35/cookiecutter-astrodata-squeleton.git --directory="sphinx-docs"
 ```
 
+### 3. Claude Setup
+
+Proposed setup for Claude structure folder (for data science project with Claude)
+
+```bash
+uv run --with cookiecutter cookiecutter https://github.com/malganis35/cookiecutter-astrodata-squeleton.git --directory="claude-setup"
+```
+
 ---
 
 ## 🛠️ Requirements
