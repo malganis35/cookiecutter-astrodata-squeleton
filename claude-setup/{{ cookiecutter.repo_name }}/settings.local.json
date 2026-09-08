@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "defaultMode": "plan",
+    "allow": [
+      "Bash(uv run:*)",
+      "Bash(uv sync:*)",
+      "Bash(uv add:*)",
+      "Bash(uv lock:*)",
+      "Bash(uv run ruff format:*)",
+      "Bash(git log:*)",
+      "Bash(git show:*)",
+      "Bash(git branch:*)",
+      "Bash(git remote -v:*)",
+      "Bash(ls:*)",
+      "Bash(tree:*)"
+    ],
+    "ask": [
+      "Bash(git commit:*)",
+      "Bash(git checkout:*)",
+      "Bash(git reset:*)"
+    ]
+  },
+  "enabledMcpjsonServers": ["playwright"],
+  "preferredNotifChannel": "terminal_bell",
+  "includeCoAuthoredBy": true,
+  "cleanupPeriodDays": 30,
+  "statusLine": {
+    "type": "command",
+    "command": "node .claude/statusline.js"
+  }
+}
