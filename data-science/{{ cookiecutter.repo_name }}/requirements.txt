@@ -1,7 +1,7 @@
 loguru
 pretty-errors
 python-dotenv
-streamlit
+streamlit>=1.54.0,<1.57.0
 fastapi
 uvicorn
 pygwalker
